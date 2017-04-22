@@ -18,14 +18,6 @@ refs : [Get started with Cloud Functions](https://firebase.google.com/docs/funct
     firebase login --no-localhost
     firebase init functions
     ```
-    
-### Setting Environment Configuration
-
-refs : [Environment Configuration](https://firebase.google.com/docs/functions/config-env)
-
-```
-firebase functions:config:set gmail.email="<email of system admin>" gmail.password="<password of system admin email>"
-```
 
 ### Deploy
 
