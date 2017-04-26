@@ -1,114 +1,114 @@
-const chai = require('chai');
+// const chai = require('chai');
 const server = require('../../server');
 // const request = require('supertest');
 const request = require("supertest-as-promised");
 
 /*
-    URL : /requisitions/community/
+    URL : /requisitions/householder/
 */
 
-exports.post_CommunityRequisition = (uid, data) => {  
+exports.post_HouseholderRequisition = (uid, data) => {  
   return request(server)
-    .post('/requisitions/community/')
+    .post('/requisitions/householder/')
     .set('Authorization', uid)
     .set('Accept', 'application/json')
     .send(data)
     .then(res => { return res });
 }
 
-exports.read_CommunityRequisitions = (uid, all) => {
+exports.read_HouseholderRequisitions = (uid, all) => {
   return request(server)
-    .get('/requisitions/community/')
+    .get('/requisitions/householder/')
     .set('Authorization', uid)
     .query({all:all})
     .set('Accept', 'application/json')
     .then(res => { return res });
 }
 
-exports.put_CommunityRequisitions = (uid) => {  
+exports.put_HouseholderRequisitions = (uid) => {  
   return request(server)
-    .put('/requisitions/community/')
+    .put('/requisitions/householder/')
     .set('Authorization', uid)
     .set('Accept', 'application/json')
     .then(res => { return res });
 }
 
-exports.delete_CommunityRequisitions = (uid) => {  
+exports.delete_HouseholderRequisitions = (uid) => {  
   return request(server)
-    .delete('/requisitions/community/')
+    .delete('/requisitions/householder/')
     .set('Authorization', uid)
     .set('Accept', 'application/json')
     .then(res => { return res });
 }
 
 /*
-    URL : /requisitions/community/:communityReqId
+    URL : /requisitions/householder/:householderReqId
 */ 
 
-exports.post_aCommunityRequisition = (uid, reqId) => {
+exports.post_aHouseholderRequisition = (uid, reqId) => {
   return request(server)
-    .post(`/requisitions/community/${reqId}/`)
+    .post(`/requisitions/householder/${reqId}/`)
     .set('Authorization', uid)
     .set('Accept', 'application/json')
     .then(res => { return res });
 }
 
-exports.get_aCommunityRequisition = (uid, reqId) => {
+exports.get_aHouseholderRequisition = (uid, reqId) => {
   return request(server)
-    .get(`/requisitions/community/${reqId}/`)
+    .get(`/requisitions/householder/${reqId}/`)
     .set('Authorization', uid)
     .set('Accept', 'application/json')
     .then(res => { return res });
 }
 
-exports.put_aCommunityRequisition = (uid, reqId, ModifiedData) => {
+exports.put_aHouseholderRequisition = (uid, reqId, ModifiedData) => {
   return request(server)
-    .put(`/requisitions/community/${reqId}/`)
+    .put(`/requisitions/householder/${reqId}/`)
     .set('Authorization', uid)
     .set('Accept', 'application/json')
     .send(ModifiedData)
     .then(res => { return res });
 }
 
-exports.delete_aCommunityRequisition = (uid, reqId) => {
+exports.delete_aHouseholderRequisition = (uid, reqId) => {
   return request(server)
-    .delete(`/requisitions/community/${reqId}/`)
+    .delete(`/requisitions/householder/${reqId}/`)
     .set('Authorization', uid)
     .set('Accept', 'application/json')
     .then(res => { return res });
 }
 
 /*
-    URL : /requisitions/community/:communityReqId/verify
+    URL : /requisitions/householder/:householderReqId/verify
 */
 
-exports.post_verifyCommunityRequisition = (uid, reqId) => {
+exports.post_verifyHouseholderRequisition = (uid, reqId) => {
   return request(server)
-    .post(`/requisitions/community/${reqId}/verify/`)
+    .post(`/requisitions/householder/${reqId}/verify/`)
     .set('Authorization', uid)
     .set('Accept', 'application/json')
     .then(res => { return res });
 }
 
-exports.get_verifyCommunityRequisition = (uid, reqId) => {
+exports.get_verifyHouseholderRequisition = (uid, reqId) => {
   return request(server)
-    .get(`/requisitions/community/${reqId}/verify/`)
+    .get(`/requisitions/householder/${reqId}/verify/`)
     .set('Authorization', uid)
     .set('Accept', 'application/json')
     .then(res => { return res });
 }
 
-exports.put_verifyCommunityRequisition = (uid, reqId) => {
+exports.put_verifyHouseholderRequisition = (uid, reqId) => {
   return request(server)
-    .put(`/requisitions/community/${reqId}/verify/`)
+    .put(`/requisitions/householder/${reqId}/verify/`)
     .set('Authorization', uid)
     .set('Accept', 'application/json')
     .then(res => { return res });
 }
 
-exports.delete_verifyCommunityRequisition = (uid, reqId) => {
+exports.delete_verifyHouseholderRequisition = (uid, reqId) => {
   return request(server)
-    .delete(`/requisitions/community/${reqId}/verify/`)
+    .delete(`/requisitions/householder/${reqId}/verify/`)
     .set('Authorization', uid)
     .set('Accept', 'application/json')
     .then(res => { return res });

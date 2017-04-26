@@ -1,25 +1,19 @@
 const faker = require('faker');
 const chai = require('chai');
-const server = require('../../server');
 const expect = chai.expect;
-const request = require("supertest-as-promised");
 const admin = require('firebase-admin');
-const ref = admin.database().ref('CommunityRequisitions');
-
 const test = require('./community');
 
 const systemAdminUid = "HOeBzcVmwyPTL3Kdl6abfQwIbx82";
 const user1Uid = "6guc1Vmi9KfMJ5SgHkMs7sm6hE32";
 const user2Uid = "BcGGCNDFYCVOnS7dIqKMZlDMC212";
 
-
-describe('社區申請單新增刪修', () => {
+describe('Community Requisitions', () => {
   var requisitions = {sysAdmin:'', user1:'', user2:''};
-  before((done) => {
-    // runs before all tests in this block
-    ref.remove().then(() => {
-      done();
-    })
+  after(() => {
+    admin.database().ref('CommunityRequisitions').child(requisitions.sysAdmin).remove();
+    admin.database().ref('CommunityRequisitions').child(requisitions.user1).remove();
+    admin.database().ref('CommunityRequisitions').child(requisitions.user2).remove();
   }); 
   
   /*
