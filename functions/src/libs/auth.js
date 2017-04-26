@@ -1,5 +1,5 @@
 const admin = require('firebase-admin');
-const permission = require("./userPermission");
+const permission = require("./permission");
 const http = require("./http");
 
 // Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
@@ -7,7 +7,7 @@ const http = require("./http");
 // `Authorization: Bearer <Firebase ID Token>`.
 // when decoded successfully, the ID Token content will be added as `req.user`.
 module.exports = (req, res, next) => {
-  console.log('Check if request is authorized with Firebase ID token');
+  // console.log('Check if request is authorized with Firebase ID token');
 
   if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
     console.error('No Firebase ID token was passed as a Bearer token in the Authorization header.',
@@ -24,7 +24,6 @@ module.exports = (req, res, next) => {
     
     permission.system(uid).then(result => {
       req.user = Object.assign(decodedIdToken, {permission:result});
-      console.log(req.user);
       next();
     })
   }).catch(error => {

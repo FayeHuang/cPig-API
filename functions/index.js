@@ -5,21 +5,25 @@ admin.initializeApp(functions.config().firebase);
 const express = require('express');
 const cors = require('cors')({origin: true});
 const router = new express.Router();
+const bodyParser = require('body-parser');
+const http = require("./src/libs/http");
 
 const auth = require('./src/libs/auth');
 const requisitions = require('./src/requisitions');
 
 router.use(cors);
+router.use(bodyParser.json());       // to support JSON-encoded bodies
+router.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
 router.use(auth);
 
 router.use('/requisitions', requisitions);
 
-//The 404 Route (ALWAYS Keep this as the last route)
+// The 404 Route (ALWAYS Keep this as the last route)
 router.get('*', (req, res) => {
-  res.send('not found', 404);
+  http.notFound(req, res);
 });
-
-
 
 exports.api = functions.https.onRequest(router);
 

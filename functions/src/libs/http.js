@@ -1,19 +1,23 @@
 exports.methodNotAllowed = function(req, res) {
-  return res.send('Method Not Allowed', 405);
+  return res.status(405).send('Method Not Allowed');
 };
 
 exports.unauthorized = function(req, res) {
-  return res.send('Unauthorized', 401);
+  return res.status(401).send('Unauthorized');
 };
 
 exports.permissionDenied = function(req, res) {
-  return res.send('Permission Denied', 403);
+  return res.status(403).send('Permission Denied');
 };
 
 exports.notFound = function(req, res) {
-  return res.send('Not Found', 404);
+  return res.status(404).send('Not Found');
+};
+
+exports.badRequest = function(req, res) {
+  return res.status(400).send('Bad Request');
 };
 
 exports.internalServerError = function(req, res, error) {
-  return res.send(error, 500);
+  return res.status(500).send(error);
 }
