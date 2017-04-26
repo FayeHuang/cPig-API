@@ -40,3 +40,6 @@ jspm_packages
 functions/node_modules
 functions/firebase-debug.log
 firebase-debug.log
+
+# firebase admin server key
+functions/cpig-firebase-adminsdk.json
