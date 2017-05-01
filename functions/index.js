@@ -38,9 +38,9 @@ exports.api = functions.https.onRequest(router);
 exports.newUserInit = functions.auth.user().onCreate(event => {
   const user = event.data; // The Firebase user.
   const uid = user.uid;
-  const email = user.email; // The email of the user.
-  const displayName = user.displayName; // The display name of the user.
-  const photoURL = user.photoURL;
+  const email = user.email ? user.email : ''; // The email of the user.
+  const displayName = user.displayName ? user.displayName : ''; // The display name of the user.
+  const photoURL = user.photoURL ? user.photoURL : '';
   const isPublic = true;
   
   const usersRef = admin.database().ref(`Users/${uid}`);
