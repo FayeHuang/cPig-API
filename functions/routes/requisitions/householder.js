@@ -11,6 +11,37 @@ const ref = admin.database().ref('HouseholderRequisitions');
 // ===================== /householder =====================
 
 router.route('/householder')
+/**
+ * @api {post} /requisitions/householder Create a new householder requisition
+ * @apiName PostHouseholderRequisitions
+ * @apiGroup HouseholderRequisitions
+ *
+ * @apiParam {String} communitySN 社區 serial number
+ * @apiParam {Number} number      新住戶門牌號碼
+ * @apiParam {String} floor       新住戶樓層
+ * @apiParamExample {json} Request-Example:
+ *  {
+ *    "communitySN": "123456",
+ *    "number": 66,
+ *    "floor": "12"
+ *  }
+ *
+ * @apiSuccess {Boolean}  success                 API 執行成功與否
+ * @apiSuccess {Object}   message                 執行結果
+ * @apiSuccess {String}   message.householderReqId  住戶申請單 ID
+ *
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *    "success": true,
+ *    "message": {
+ *      "householderReqId": "Tmp7UHrj5LN0lAA0"
+ *    }
+ *  }
+ * 
+ * @apiUse Header
+ * @apiUse Error
+ */
 .post((req, res) => {
   if (!req.body.communityId || !req.body.number || !req.body.floor)
     return http.badRequest(req, res);
@@ -48,6 +79,38 @@ router.route('/householder')
   else
     return http.permissionDenied(req, res);
 })
+/**
+ * @api {get} /requisitions/householder Read data of householder requisitions
+ * @apiName GetHouseholderRequisitions
+ * @apiGroup HouseholderRequisitions
+ *
+ * @apiParam (Query string) {Boolean} [all] if true, 取得所有住戶申請單. if false, 取得使用者的住戶申請單.
+ *
+ * @apiSuccess {Boolean}  success                             API 執行成功與否
+ * @apiSuccess {Object}   message                             執行結果
+ * @apiSuccess {String}   message.householderReqId            住戶申請單 ID
+ * @apiSuccess {String}   message.householderReqId.community  社區 ID
+ * @apiSuccess {String}   message.householderReqId.createUser 住戶申請單建立人
+ * @apiSuccess {String}   message.householderReqId.floor      新住戶樓層
+ * @apiSuccess {String}   message.householderReqId.number     新住戶門牌號碼
+ * 
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *    "success": true,
+ *    "message": {
+ *      "7R2WlYFIYcLOgiLY": {
+ *        "community": "WtICybIMORvkOg4I",
+ *        "createUser": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+ *        "floor": "12",
+ *        "number": 66
+ *      }
+ *    }
+ *  }
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
 .get((req, res) => {
   if (req.query.all === 'true') {
     // 取得所有住戶申請單
@@ -98,6 +161,38 @@ router.route('/householder/:householderReqId')
   .catch(error => {return http.internalServerError(req, res, error)});
   
 })
+/**
+ * @api {get} /requisitions/householder/:householderReqId Read data of the householder requisition
+ * @apiName GetHouseholderRequisition
+ * @apiGroup HouseholderRequisitions
+ *
+ * @apiParam {String} householderReqId 住戶申請單 ID
+ * 
+ * @apiSuccess {Boolean}  success                             API 執行成功與否
+ * @apiSuccess {Object}   message                             執行結果
+ * @apiSuccess {String}   message.householderReqId            住戶申請單 ID
+ * @apiSuccess {String}   message.householderReqId.community  社區 ID
+ * @apiSuccess {String}   message.householderReqId.createUser 住戶申請單建立人
+ * @apiSuccess {String}   message.householderReqId.floor      新住戶樓層
+ * @apiSuccess {String}   message.householderReqId.number     新住戶門牌號碼
+ * 
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *    "success": true,
+ *    "message": {
+ *      "7R2WlYFIYcLOgiLY": {
+ *        "community": "WtICybIMORvkOg4I",
+ *        "createUser": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+ *        "floor": "12",
+ *        "number": 66
+ *      }
+ *    }
+ *  }
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
 .get((req, res) => {
   const householderReqId = req.params.householderReqId;
   
@@ -125,6 +220,24 @@ router.route('/householder/:householderReqId')
   else
     return http.permissionDenied(req, res);
 })
+/**
+ * @api {delete} /requisitions/householder/:householderReqId Delete the householder requisition
+ * @apiName DeleteHouseholderRequisition
+ * @apiGroup HouseholderRequisitions
+ *
+ * @apiParam {String} householderReqId 住戶申請單 ID
+ * 
+ * @apiSuccess {Boolean}  success                             API 執行成功與否
+ * 
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *    "success": true
+ *  }
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
 .delete((req, res) => {
   const householderReqId = req.params.householderReqId;
   
@@ -167,6 +280,29 @@ router.route('/householder/:householderReqId/verify')
   })
   .catch(error => {return http.internalServerError(req, res, error)});
 })
+/**
+ * @api {post} /requisitions/householder/:householderReqId/verify Verify the householder requisition
+ * @apiName PostHouseholderRequisitionVerify
+ * @apiGroup HouseholderRequisitions
+ *
+ * @apiParam {String} householderReqId 住戶申請單 ID
+ * 
+ * @apiSuccess {Boolean}  success             API 執行成功與否
+ * @apiSuccess {Object}   message             執行結果
+ * @apiSuccess {String}   message.householderId 住戶 ID
+ *
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *    "success": true,
+ *    "message": {
+ *      "householderId": "WtICybIMORvkOg4I"
+ *    }
+ *  }
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
 .post((req, res) => {
   // 指定住戶申請單審核通過
   if (permission.isAllowed(req.user.permission, 'HouseholderRequisitions:verify')) {

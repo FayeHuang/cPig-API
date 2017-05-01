@@ -20,6 +20,17 @@
     "supertest-as-promised": "^4.0.2"
   },
   "scripts": {
-    "test": "mocha --timeout 15000"
+    "test": "mocha --timeout 15000",
+    "gen-doc": "rm -rf apidoc && apidoc -f 'routes/.*\\.js$' -i ./ -o apidoc/",
+    "start": "rm -rf apidoc && apidoc -f 'routes/.*\\.js$' -i ./ -o apidoc/ && node serverUp.js",
+    "deploy": "rm -rf apidoc && apidoc -f 'routes/.*\\.js$' -i ./ -o apidoc/ && firebase deploy --only functions"
+  },
+  "apidoc": {
+    "title": "CPIG API",
+    "url" : "https://us-central1-cpig-5b148.cloudfunctions.net/api",
+    "sampleUrl": "https://us-central1-cpig-5b148.cloudfunctions.net/api",
+    "template": {
+      "forceLanguage": "en"
+    }
   }
 }

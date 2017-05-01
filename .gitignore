@@ -43,3 +43,6 @@ firebase-debug.log
 
 # firebase admin server key
 functions/cpig-firebase-adminsdk.json
+
+# api doc
+functions/apidoc/

@@ -12,17 +12,25 @@ const express = require('express');
 const cors = require('cors')({origin: true});
 const router = new express.Router();
 const bodyParser = require('body-parser');
-const fakeAuth = require('./src/libs/fakeAuth');
-const requisitions = require('./src/requisitions');
-const http = require("./src/libs/http");
+const fakeAuth = require('./routes/libs/fakeAuth');
+const requisitions = require('./routes/requisitions');
+const communities = require('./routes/communities');
+const permissions = require('./routes/permissions');
+const invitations = require('./routes/invitations');
+const http = require("./routes/libs/http");
 router.use(cors);
 router.use(bodyParser.json());       // to support JSON-encoded bodies
 router.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
+router.use('/doc', express.static('apidoc'));
 router.use(fakeAuth);
 
+router.use('/permissions', permissions);
 router.use('/requisitions', requisitions);
+router.use('/communities', communities);
+router.use('/invitations', invitations);
+
 // The 404 Route (ALWAYS Keep this as the last route)
 router.get('*', (req, res) => {
   http.notFound(req, res);

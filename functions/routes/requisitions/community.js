@@ -7,9 +7,40 @@ const permission = require("../libs/permission");
 
 const ref = admin.database().ref('CommunityRequisitions');
 
-// ===================== /community =====================
+
 
 router.route('/community')
+/**
+ * @api {get} /requisitions/community Read data of community requisitions
+ * @apiName GetCommunityRequisitions
+ * @apiGroup CommunityRequisitions
+ *
+ * @apiParam (Query string) {Boolean} [all] if true, 取得所有社區申請單. if false, 取得使用者的社區申請單.
+ * @apiPermission Authorized users only
+ *
+ * @apiSuccess {Boolean}  success         API 執行成功與否
+ * @apiSuccess {Object}   message      執行結果
+ * @apiSuccess {String}   message.communityReqId  社區申請單 ID
+ * @apiSuccess {String}   message.communityReqId.address  新社區位址
+ * @apiSuccess {String}   message.communityReqId.createUser  社區申請單建立人
+ * @apiSuccess {String}   message.communityReqId.name 新社區名稱
+ *
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *    "success": true,
+ *    "message": {
+ *      "pbNM7iAWdh1iBTRx": {
+ *        "address": "community 1 address",
+ *        "createUser": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+ *        "name": "community 1"
+ *      }
+ *    }
+ *  }
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
 .get((req, res) => {
   if (req.query.all === 'true') {
     // 取得所有社區申請單資料
@@ -40,6 +71,35 @@ router.route('/community')
       return http.permissionDenied(req, res);
   }
 })
+/**
+ * @api {post} /requisitions/community Create a new community requisition
+ * @apiName PostCommunityRequisitions
+ * @apiGroup CommunityRequisitions
+ *
+ * @apiParam {String} name    新社區名稱
+ * @apiParam {String} address 新社區地址
+ * @apiParamExample {json} Request-Example:
+ *  {
+ *    "name": "community 1",
+ *    "address": "community 1 address"
+ *  }
+ *
+ * @apiSuccess {Boolean}  success                 API 執行成功與否
+ * @apiSuccess {Object}   message                 執行結果
+ * @apiSuccess {String}   message.communityReqId  社區申請單 ID
+ *
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *    "success": true,
+ *    "message": {
+ *      "communityReqId": "Tmp7UHrj5LN0lAA0"
+ *    }
+ *  }
+ * 
+ * @apiUse Header
+ * @apiUse Error
+ */
 .post((req, res) => {
   if (!req.body.name || !req.body.address ) {
     return http.badRequest(req, res);
@@ -81,6 +141,36 @@ router.route('/community/:communityReqId')
   .catch(error => {return http.internalServerError(req, res, error)});
   
 })
+/**
+ * @api {get} /requisitions/community/:communityReqId Read data of the community requisition
+ * @apiName GetCommunityRequisition
+ * @apiGroup CommunityRequisitions
+ *
+ * @apiParam {String} communityReqId 社區申請單 ID
+ * 
+ * @apiSuccess {Boolean}  success                           API 執行成功與否
+ * @apiSuccess {Object}   message                           執行結果
+ * @apiSuccess {String}   message.communityReqId            社區申請單 ID
+ * @apiSuccess {String}   message.communityReqId.address    新社區位址
+ * @apiSuccess {String}   message.communityReqId.createUser 社區申請單建立人
+ * @apiSuccess {String}   message.communityReqId.name       新社區名稱
+ *
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *    "success": true,
+ *    "message": {
+ *      "pbNM7iAWdh1iBTRx": {
+ *        "address": "community 1 address",
+ *        "createUser": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+ *        "name": "community 1"
+ *      }
+ *    }
+ *  }
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
 .get((req, res) => {
   const communityReqId = req.params.communityReqId;
   // 取得指定社區申請單資料 (可以讀其他人的)
@@ -108,6 +198,42 @@ router.route('/community/:communityReqId')
   else
     return http.permissionDenied(req, res);
 })
+/**
+ * @api {put} /requisitions/community/:communityReqId Modify data of the community requisition
+ * @apiName PutCommunityRequisition
+ * @apiGroup CommunityRequisitions
+ *
+ * @apiParam {String} communityReqId 社區申請單 ID
+ * @apiParam {String} [name]    修改的新社區名稱
+ * @apiParam {String} [address] 修改的新社區地址
+ * @apiParamExample {json} Request-Example:
+ *  {
+ *    "address": "community 1 address 123"
+ *  }
+ * 
+ * @apiSuccess {Boolean}  success                           API 執行成功與否
+ * @apiSuccess {Object}   message                           執行結果
+ * @apiSuccess {String}   message.communityReqId            社區申請單 ID
+ * @apiSuccess {String}   message.communityReqId.address    修改後的新社區位址
+ * @apiSuccess {String}   message.communityReqId.createUser 社區申請單建立人
+ * @apiSuccess {String}   message.communityReqId.name       修改後的新社區名稱
+ *
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *    "success": true,
+ *    "message": {
+ *      "pbNM7iAWdh1iBTRx": {
+ *        "address": "community 1 address 123",
+ *        "createUser": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+ *        "name": "community 1"
+ *      }
+ *    }
+ *  }
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
 .put((req, res) => {
   if (!req.body.name && !req.body.address)
     return http.badRequest(req, res);
@@ -151,6 +277,24 @@ router.route('/community/:communityReqId')
   else
     return http.permissionDenied(req, res);
 })
+/**
+ * @api {delete} /requisitions/community/:communityReqId Delete the community requisition
+ * @apiName DeleteCommunityRequisition
+ * @apiGroup CommunityRequisitions
+ * 
+ * @apiParam {String} communityReqId 社區申請單 ID
+ * 
+ * @apiSuccess {Boolean}  success                           API 執行成功與否
+ *
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *    "success": true
+ *  }
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
 .delete((req, res) => {
   const communityReqId = req.params.communityReqId;
   // 刪除指定社區申請單 (可以刪除其它人的)
@@ -171,7 +315,7 @@ router.route('/community/:communityReqId')
       } 
       else
         return http.permissionDenied(req, res);
-    })
+    }).catch(error => {return http.internalServerError(req, res, error)});
   }
   else
     return http.permissionDenied(req, res);
@@ -192,6 +336,29 @@ router.route('/community/:communityReqId/verify')
   .catch(error => {return http.internalServerError(req, res, error)});
   
 })
+/**
+ * @api {post} /requisitions/community/:communityReqId/verify Verify the community requisition
+ * @apiName PostCommunityRequisitionVerify
+ * @apiGroup CommunityRequisitions
+ *
+ * @apiParam {String} communityReqId 社區申請單 ID
+ * 
+ * @apiSuccess {Boolean}  success             API 執行成功與否
+ * @apiSuccess {Object}   message             執行結果
+ * @apiSuccess {String}   message.communityId 社區 ID
+ *
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *    "success": true,
+ *    "message": {
+ *      "communityId": "WtICybIMORvkOg4I"
+ *    }
+ *  }
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
 .post((req, res) => {
   const communityReqId = req.params.communityReqId;
   // 指定社區申請單審核通過
