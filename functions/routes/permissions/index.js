@@ -420,7 +420,7 @@ router.route('/community/:communityId')
  * 
  * @apiSuccess {Boolean}  success                             API 執行成功與否
  * @apiSuccess {Object}   message                             執行結果
- * @apiSuccess {Object}   message.rule                        角色的權限
+ * @apiSuccess {Object}   message.role                        角色的權限
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK

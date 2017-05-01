@@ -206,10 +206,11 @@ router.route('/:communityId/guards/invitations')
               beInvitedUser: req.body.user,
               inviteUser: req.user.uid
             }).then(() => {
-              admin.database().ref(`Invitations/${req.body.user}/${invitationId}`).set({
+              admin.database().ref(`Invitations/${invitationId}`).set({
                 role: 'GUARD',
                 community: req.communityId,
-                inviteUser: req.user.uid
+                inviteUser: req.user.uid,
+                beInvitedUser: req.body.user
               }).then(() => {
                 return res.json({
                   success: true,

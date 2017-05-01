@@ -81,11 +81,13 @@ router.route('/:communityId')
     }).catch(error => {return http.internalServerError(req, res, error)});
   }
   else if (permission.isAllowed(req.user.permission, 'Communities:own:read')) {
-    admin.database().ref(`Communities/${req.communityId}`).once('value').then(snapshot => {
-      if (snapshot.val().createUser === req.user.uid) {
-        var result = {success:true, message:{}};
-        result.message[snapshot.key] = snapshot.val();
-        res.json(result);
+    admin.database().ref(`UserRoles/${req.user.uid}/communities/${req.communityId}`).once('value').then(snapshot => {
+      if (snapshot.val()) {
+        admin.database().ref(`Communities/${req.communityId}`).once('value').then(snapshot => {
+          var result = {success:true, message:{}};
+          result.message[req.communityId] = snapshot.val();
+          res.json(result);
+        }).catch(error => {return http.internalServerError(req, res, error)});
       }
       else
         return http.permissionDenied(req, res);
