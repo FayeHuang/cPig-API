@@ -1,18 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const http = require("../libs/http");
-const uuid = require("../libs/uuid");
+const randomstring = require("../libs/randomstring");
 const admin = require('firebase-admin');
 const permission = require("../libs/permission");
+const verify = require("../libs/verify");
 
 const ref = admin.database().ref('HouseholderRequisitions');
 
 
-// ===================== /householder =====================
+// ===================== /householderRequisitions =====================
 
-router.route('/householder')
+router.route('/')
 /**
- * @api {post} /requisitions/householder Create a new householder requisition
+ * @api {post} /householderRequisitions Create a new householder requisition
  * @apiName PostHouseholderRequisitions
  * @apiGroup HouseholderRequisitions
  *
@@ -43,20 +44,19 @@ router.route('/householder')
  * @apiUse Error
  */
 .post((req, res) => {
-  if (!req.body.communityId || !req.body.number || !req.body.floor)
+  if (!req.body.communitySN || !req.body.number || !req.body.floor)
     return http.badRequest(req, res);
   
-  const communityId = req.body.communityId;
+  const communitySN = req.body.communitySN;
   const number = req.body.number;
   const floor = req.body.floor;
   
   // 新增住戶申請單
   if (permission.isAllowed(req.user.permission, 'HouseholderRequisitions:create')) {
-    admin.database().ref(`Communities/${communityId}`).once('value').then(snapshot => {
-      return snapshot.val();
-    }).then(community => {
-      if (community) {
-        const householderReqId = uuid();
+    admin.database().ref(`CommunitySNs`).orderByChild('sn').equalTo(communitySN).once('value').then(snapshot => {
+      if (snapshot.val()) {
+        const communityId = Object.keys(snapshot.val())[0];
+        const householderReqId = randomstring.uuid();
         ref.child(householderReqId).set({
           number: number,
           floor: floor,
@@ -70,17 +70,15 @@ router.route('/householder')
         })
         .catch(error => {return http.internalServerError(req, res, error)});
       }
-      else 
-        return http.badRequest(req, res);
-      
-    })
-    .catch(error => {return http.internalServerError(req, res, error)});
+      else
+        return http.badRequest(req, res, 'wrong communitySN');
+    }).catch(error => {return http.internalServerError(req, res, error)});
   }
   else
     return http.permissionDenied(req, res);
 })
 /**
- * @api {get} /requisitions/householder Read data of householder requisitions
+ * @api {get} /householderRequisitions Read data of householder requisitions
  * @apiName GetHouseholderRequisitions
  * @apiGroup HouseholderRequisitions
  *
@@ -146,23 +144,26 @@ router.route('/householder')
 .all((req, res) => {return http.methodNotAllowed(req, res)});
 
 
-// ===================== /householder/:householderReqId =====================
+// ===================== /householderRequisitions/:householderReqId =====================
 
 
-router.route('/householder/:householderReqId')
+router.route('/:householderReqId')
 .all((req, res, next) => {
-  
   ref.child(req.params.householderReqId).once('value').then(snapshot => {
-    if (snapshot.val())
+    if (snapshot.val()) {
+      req.communityId = snapshot.val().community;
       next();
+    }
     else
       return http.notFound(req, res);
   })
   .catch(error => {return http.internalServerError(req, res, error)});
-  
+})
+.all((req, res, next) => {
+  permission.community(req, res, next);
 })
 /**
- * @api {get} /requisitions/householder/:householderReqId Read data of the householder requisition
+ * @api {get} /householderRequisitions/:householderReqId Read data of the householder requisition
  * @apiName GetHouseholderRequisition
  * @apiGroup HouseholderRequisitions
  *
@@ -221,7 +222,7 @@ router.route('/householder/:householderReqId')
     return http.permissionDenied(req, res);
 })
 /**
- * @api {delete} /requisitions/householder/:householderReqId Delete the householder requisition
+ * @api {delete} /householderRequisitions/:householderReqId Delete the householder requisition
  * @apiName DeleteHouseholderRequisition
  * @apiGroup HouseholderRequisitions
  *
@@ -268,20 +269,25 @@ router.route('/householder/:householderReqId')
 .all((req, res) => {return http.methodNotAllowed(req, res)});
 
 
-// ===================== /householder/:householderReqId/verify =====================
+// ===================== /householderRequisitions/:householderReqId/verify =====================
 
-router.route('/householder/:householderReqId/verify')
+router.route('/:householderReqId/verify')
 .all((req, res, next) => {
   ref.child(req.params.householderReqId).once('value').then(snapshot => {
-    if (snapshot.val())
+    if (snapshot.val()) {
+      req.communityId = snapshot.val().community;
       next();
+    }
     else
       return http.notFound(req, res);
   })
   .catch(error => {return http.internalServerError(req, res, error)});
 })
+.all((req, res, next) => {
+  permission.community(req, res, next);
+})
 /**
- * @api {post} /requisitions/householder/:householderReqId/verify Verify the householder requisition
+ * @api {post} /householderRequisitions/:householderReqId/verify Verify the householder requisition
  * @apiName PostHouseholderRequisitionVerify
  * @apiGroup HouseholderRequisitions
  *
@@ -318,7 +324,7 @@ router.route('/householder/:householderReqId/verify')
           number: number, 
           floor: floor,
           createUser: createUser, 
-          householderId: uuid(),
+          householderId: randomstring.uuid(),
           permission: snapshot.val()
         }
       })
@@ -344,6 +350,83 @@ router.route('/householder/:householderReqId/verify')
   }
   else
     return http.permissionDenied(req, res);
+})
+.all((req, res) => {return http.methodNotAllowed(req, res)});
+
+/*
+  URL : /householderRequisitions/community/:communityId
+*/
+router.route('/community/:communityId')
+.all((req, res, next) => {
+  verify.communityExist(req, res, next);
+})
+.all((req, res, next) => {
+  permission.community(req, res, next);
+})
+/**
+ * @api {get} /householderRequisitions/community/:communityId Read data of householder requisitions in the community
+ * @apiName GetCommunityHouseholderRequisitions
+ * @apiGroup HouseholderRequisitions
+ *
+ * @apiParam (Query string) {Boolean} [all] if true, 取得社區中所有住戶申請單. if false, 取得社區中使用者的住戶申請單.
+ *
+ * @apiSuccess {Boolean}  success                             API 執行成功與否
+ * @apiSuccess {Object}   message                             執行結果
+ * @apiSuccess {String}   message.householderReqId            住戶申請單 ID
+ * @apiSuccess {String}   message.householderReqId.community  社區 ID
+ * @apiSuccess {String}   message.householderReqId.createUser 住戶申請單建立人
+ * @apiSuccess {String}   message.householderReqId.floor      新住戶樓層
+ * @apiSuccess {String}   message.householderReqId.number     新住戶門牌號碼
+ * 
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *    "success": true,
+ *    "message": {
+ *      "7R2WlYFIYcLOgiLY": {
+ *        "community": "WtICybIMORvkOg4I",
+ *        "createUser": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+ *        "floor": "12",
+ *        "number": 66
+ *      }
+ *    }
+ *  }
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
+.get((req, res) => {
+  if (req.query.all === 'true') {
+    if (permission.isAllowed(req.user.permission, 'HouseholderRequisitions:other:read')) {
+      admin.database().ref(`HouseholderRequisitions`).orderByChild('community').equalTo(req.communityId).once('value')
+      .then(snapshot => {
+        var result = {success:true, message:{}};
+        snapshot.forEach((childSnapshot) => {
+          result['message'][childSnapshot.key] = childSnapshot.val()
+        })
+        return res.json(result);
+      })
+      .catch(error => {return http.internalServerError(req, res, error)});
+    }
+    else
+      return http.permissionDenied(req, res);
+  }
+  else {
+    if (permission.isAllowed(req.user.permission, 'HouseholderRequisitions:own:read')) {
+      admin.database().ref(`HouseholderRequisitions`).orderByChild('community').equalTo(req.communityId).once('value')
+      .then(snapshot => {
+        var result = {success:true, message:{}};
+        snapshot.forEach((childSnapshot) => {
+          if (childSnapshot.val().createUser === req.user.uid)
+            result['message'][childSnapshot.key] = childSnapshot.val()
+        })
+        return res.json(result);
+      })
+      .catch(error => {return http.internalServerError(req, res, error)});
+    }
+    else
+      return http.permissionDenied(req, res);
+  }
 })
 .all((req, res) => {return http.methodNotAllowed(req, res)});
 

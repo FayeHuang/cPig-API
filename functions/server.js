@@ -17,7 +17,9 @@ const requisitions = require('./routes/requisitions');
 const communities = require('./routes/communities');
 const permissions = require('./routes/permissions');
 const invitations = require('./routes/invitations');
+const inviteCodes = require('./routes/inviteCodes');
 const http = require("./routes/libs/http");
+
 router.use(cors);
 router.use(bodyParser.json());       // to support JSON-encoded bodies
 router.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -27,7 +29,8 @@ router.use('/doc', express.static('apidoc'));
 router.use(fakeAuth);
 
 router.use('/permissions', permissions);
-router.use('/requisitions', requisitions);
+router.use(requisitions);
+router.use(inviteCodes);
 router.use('/communities', communities);
 router.use('/invitations', invitations);
 

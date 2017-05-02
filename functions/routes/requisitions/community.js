@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const http = require("../libs/http");
-const uuid = require("../libs/uuid");
+const randomstring = require("../libs/randomstring");
 const admin = require('firebase-admin');
 const permission = require("../libs/permission");
 
@@ -9,9 +9,9 @@ const ref = admin.database().ref('CommunityRequisitions');
 
 
 
-router.route('/community')
+router.route('/')
 /**
- * @api {get} /requisitions/community Read data of community requisitions
+ * @api {get} /communityRequisitions Read data of community requisitions
  * @apiName GetCommunityRequisitions
  * @apiGroup CommunityRequisitions
  *
@@ -72,7 +72,7 @@ router.route('/community')
   }
 })
 /**
- * @api {post} /requisitions/community Create a new community requisition
+ * @api {post} /communityRequisitions Create a new community requisition
  * @apiName PostCommunityRequisitions
  * @apiGroup CommunityRequisitions
  *
@@ -109,7 +109,7 @@ router.route('/community')
   const address = req.body.address;
   // 新增社區申請單
   if (permission.isAllowed(req.user.permission,'CommunityRequisitions:create')) {
-    const communityReqId = uuid();
+    const communityReqId = randomstring.uuid();
     ref.child(communityReqId).set({
       name: name,
       address: address,
@@ -127,11 +127,10 @@ router.route('/community')
 })
 .all((req, res) => {return http.methodNotAllowed(req, res)});
 
-// ===================== /community/:communityReqId =====================
+// ===================== /communityRequisitions/:communityReqId =====================
 
-router.route('/community/:communityReqId')
+router.route('/:communityReqId')
 .all((req, res, next) => {
-  
   ref.child(req.params.communityReqId).once('value').then(snapshot => {
     if (snapshot.val())
       next();
@@ -139,10 +138,9 @@ router.route('/community/:communityReqId')
       return http.notFound(req, res);
   })
   .catch(error => {return http.internalServerError(req, res, error)});
-  
 })
 /**
- * @api {get} /requisitions/community/:communityReqId Read data of the community requisition
+ * @api {get} /communityRequisitions/:communityReqId Read data of the community requisition
  * @apiName GetCommunityRequisition
  * @apiGroup CommunityRequisitions
  *
@@ -199,7 +197,7 @@ router.route('/community/:communityReqId')
     return http.permissionDenied(req, res);
 })
 /**
- * @api {put} /requisitions/community/:communityReqId Modify data of the community requisition
+ * @api {put} /communityRequisitions/:communityReqId Modify data of the community requisition
  * @apiName PutCommunityRequisition
  * @apiGroup CommunityRequisitions
  *
@@ -278,7 +276,7 @@ router.route('/community/:communityReqId')
     return http.permissionDenied(req, res);
 })
 /**
- * @api {delete} /requisitions/community/:communityReqId Delete the community requisition
+ * @api {delete} /communityRequisitions/:communityReqId Delete the community requisition
  * @apiName DeleteCommunityRequisition
  * @apiGroup CommunityRequisitions
  * 
@@ -322,9 +320,9 @@ router.route('/community/:communityReqId')
 })
 .all((req, res) => {return http.methodNotAllowed(req, res)});
 
-// ===================== /community/:communityReqId/verify =====================
+// ===================== /communityRequisitions/:communityReqId/verify =====================
 
-router.route('/community/:communityReqId/verify')
+router.route('/:communityReqId/verify')
 .all((req, res, next) => {
   
   ref.child(req.params.communityReqId).once('value').then(snapshot => {
@@ -337,7 +335,7 @@ router.route('/community/:communityReqId/verify')
   
 })
 /**
- * @api {post} /requisitions/community/:communityReqId/verify Verify the community requisition
+ * @api {post} /communityRequisitions/:communityReqId/verify Verify the community requisition
  * @apiName PostCommunityRequisitionVerify
  * @apiGroup CommunityRequisitions
  *
@@ -376,13 +374,14 @@ router.route('/community/:communityReqId/verify')
           name: name, 
           address: address, 
           createUser: createUser, 
-          communityId: uuid(),
+          communityId: randomstring.uuid(),
           permission: permission
         }
       })
     }).then(data => {
       var updates = {};
       updates[`/Communities/${data.communityId}`] = {name:data.name, address:data.address};
+      updates[`/CommunitySNs/${data.communityId}/sn`] = randomstring.sn();
       updates[`/CommunityMembers/${data.communityId}/COMMUNITY_ADMIN/${data.createUser}`] = true;
       updates[`/UserRoles/${data.createUser}/communities/${data.communityId}/COMMUNITY_ADMIN`] = true;
       updates[`/CommunityPermissions/${data.communityId}`] = data.permission;

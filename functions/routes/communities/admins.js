@@ -4,9 +4,207 @@ const http = require("../libs/http");
 const admin = require('firebase-admin');
 const verify = require("../libs/verify")
 
-const uuid = require("../libs/uuid");
+const randomstring = require("../libs/randomstring");
 const permission = require("../libs/permission");
 const merge = require("deepmerge");
+
+
+
+/*
+  URL : /communities/:communityId/admins/inviteCode/
+*/
+router.route('/:communityId/admins/inviteCode')
+.all((req, res, next) => {
+  verify.communityExist(req, res, next);
+})
+.all((req, res, next) => {
+  permission.community(req, res, next);
+})
+/**
+ * @api {get} /communities/:communityId/admins/inviteCode Read user COMMUNITY_ADMIN invite code in the community
+ * @apiName GetCommunityAdminInviteCode
+ * @apiGroup CommunityAdmins
+ *
+ * @apiParam {String} communityId 社區 ID 
+ * 
+ * @apiSuccess {Boolean}  success             API 執行成功與否
+ * @apiSuccess {Object}   message             執行結果
+ * @apiSuccess {String}   message.code        invite code (6 位數字+大小寫字母隨機產生)
+ * @apiSuccess {String}   message.createTime  invite code 建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.expiredTime invite code 過期時間, 建立時間 10 分鐘後 (time since the Unix epoch, in milliseconds)
+ * 
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+{
+  "success": true,
+  "message": {
+    "code": "ZShsyl",
+    "createTime": 1493696307392,
+    "expiredTime": 1493696907392
+  }
+}
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
+.get((req, res) => {
+  if (permission.isAllowed(req.user.permission, 'MemberInviteCodes:COMMUNITY_ADMIN:own:read')) {
+    admin.database().ref(`CommunityAdminInviteCodes/${req.communityId}/${req.user.uid}`).once('value')
+    .then(snapshot => {
+      var result = {success:true, message:{}};
+      if (snapshot.val())
+        result.message = snapshot.val();
+      return res.json(result);
+    }).catch(error => {return http.internalServerError(req, res, error)});   
+  }
+  else
+    return http.permissionDenied(req, res);
+})
+/**
+ * @api {post} /communities/:communityId/admins/inviteCode Create new user COMMUNITY_ADMIN invite code in the community
+ * @apiName PostCommunityAdminInviteCode
+ * @apiGroup CommunityAdmins
+ *
+ * @apiParam {String} communityId 社區 ID 
+ * 
+ * @apiSuccess {Boolean}  success             API 執行成功與否
+ * @apiSuccess {Object}   message             執行結果
+ * @apiSuccess {String}   message.code        invite code (6 位數字+大小寫字母隨機產生)
+ * @apiSuccess {String}   message.createTime  invite code 建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.expiredTime invite code 過期時間, 建立時間 10 分鐘後 (time since the Unix epoch, in milliseconds)
+ * 
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+{
+  "success": true,
+  "message": {
+    "code": "ZShsyl",
+    "createTime": 1493696307392,
+    "expiredTime": 1493696907392
+  }
+}
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
+.post((req, res) => {
+  if (permission.isAllowed(req.user.permission, 'MemberInviteCodes:COMMUNITY_ADMIN:create')) {
+    const createTime = new Date();
+    const createTimestamp = createTime.getTime();
+    const expiredTimestamp = createTime.setMinutes(createTime.getMinutes() + 10);
+    const code = randomstring.code();
+    admin.database().ref(`CommunityAdminInviteCodes/${req.communityId}/${req.user.uid}`).set({
+      code: code,
+      createTime: createTimestamp,
+      expiredTime: expiredTimestamp
+    }).then(() => {
+      const inviteCodeId = `COMMUNITY_ADMIN_${req.user.uid}${req.communityId}`;
+      return admin.database().ref(`InviteCodes/${inviteCodeId}`).set({
+        role: 'COMMUNITY_ADMIN',
+        community: req.communityId,
+        code: code,
+        createTime: createTimestamp,
+        expiredTime: expiredTimestamp
+      })
+    }).then(() => {
+      admin.database().ref(`CommunityAdminInviteCodes/${req.communityId}/${req.user.uid}`).once('value')
+      .then(snapshot => {
+        return res.json({success:true, message:snapshot.val()});
+      }).catch(error => {return http.internalServerError(req, res, error)});
+    }).catch(error => {return http.internalServerError(req, res, error)});
+  }
+  else
+    return http.permissionDenied(req, res);
+})
+/**
+ * @api {put} /communities/:communityId/admins/inviteCode Update user COMMUNITY_ADMIN invite code in the community
+ * @apiName PutCommunityAdminInviteCode
+ * @apiGroup CommunityAdmins
+ *
+ * @apiParam {String} communityId 社區 ID 
+ * 
+ * @apiSuccess {Boolean}  success             API 執行成功與否
+ * @apiSuccess {Object}   message             執行結果
+ * @apiSuccess {String}   message.code        invite code (6 位數字+大小寫字母隨機產生)
+ * @apiSuccess {String}   message.createTime  invite code 建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.expiredTime invite code 過期時間, 建立時間 10 分鐘後 (time since the Unix epoch, in milliseconds)
+ * 
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+{
+  "success": true,
+  "message": {
+    "code": "ZShsyl",
+    "createTime": 1493696307392,
+    "expiredTime": 1493696907392
+  }
+}
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
+.put((req, res) => {
+  if (permission.isAllowed(req.user.permission, 'MemberInviteCodes:COMMUNITY_ADMIN:own:update')) {
+    const createTime = new Date();
+    const createTimestamp = createTime.getTime();
+    const expiredTimestamp = createTime.setMinutes(createTime.getMinutes() + 10);
+    const code = randomstring.code();
+    admin.database().ref(`CommunityAdminInviteCodes/${req.communityId}/${req.user.uid}`).set({
+      code: code,
+      createTime: createTimestamp,
+      expiredTime: expiredTimestamp
+    }).then(() => {
+      const inviteCodeId = `COMMUNITY_ADMIN_${req.user.uid}${req.communityId}`;
+      return admin.database().ref(`InviteCodes/${inviteCodeId}`).set({
+        role: 'COMMUNITY_ADMIN',
+        community: req.communityId,
+        code: code,
+        createTime: createTimestamp,
+        expiredTime: expiredTimestamp
+      })
+    }).then(() => {
+      admin.database().ref(`CommunityAdminInviteCodes/${req.communityId}/${req.user.uid}`).once('value')
+      .then(snapshot => {
+        return res.json({success:true, message:snapshot.val()});
+      }).catch(error => {return http.internalServerError(req, res, error)});
+    }).catch(error => {return http.internalServerError(req, res, error)});
+  }
+  else
+    return http.permissionDenied(req, res);
+})
+/**
+ * @api {delete} /communities/:communityId/admins/inviteCode Delete user COMMUNITY_ADMIN invite code in the community
+ * @apiName DeleteCommunityAdminInviteCode
+ * @apiGroup CommunityAdmins
+ *
+ * @apiParam {String} communityId 社區 ID 
+ * 
+ * @apiSuccess {Boolean}  success             API 執行成功與否
+ * 
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+{
+  "success": true
+}
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
+.delete((req, res) => {
+  if (permission.isAllowed(req.user.permission, 'MemberInviteCodes:COMMUNITY_ADMIN:own:delete')) {
+    admin.database().ref(`CommunityAdminInviteCodes/${req.communityId}/${req.user.uid}`).remove()
+    .then(() => {
+      const inviteCodeId = `COMMUNITY_ADMIN_${req.user.uid}${req.communityId}`;
+      return admin.database().ref(`InviteCodes/${inviteCodeId}`).remove();
+    })
+    .then(() => {
+      return res.json({success:true})
+    }).catch(error => {return http.internalServerError(req, res, error)});
+  }
+  else
+    http.permissionDenied(req, res);
+})
+.all((req, res) => {return http.methodNotAllowed(req, res)});
 
 
 
@@ -201,7 +399,7 @@ router.route('/:communityId/admins/invitations')
         admin.database().ref(`CommunityMembers/${req.communityId}/COMMUNITY_ADMIN/${req.body.user}`).once('value')
         .then(snapshot => {
           if (!snapshot.val()) {
-            const invitationId = uuid();
+            const invitationId = randomstring.uuid();
             admin.database().ref(`InvitedCommunityAdmins/${req.communityId}/${invitationId}`).set({
               beInvitedUser: req.body.user,
               inviteUser: req.user.uid
