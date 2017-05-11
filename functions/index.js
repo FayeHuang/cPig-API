@@ -6,14 +6,8 @@ const express = require('express');
 const cors = require('cors');
 const router = new express.Router();
 const bodyParser = require('body-parser');
-const http = require("./routes/libs/http");
-
 const auth = require('./routes/libs/auth');
-const requisitions = require('./routes/requisitions');
-const communities = require('./routes/communities');
-const permissions = require('./routes/permissions');
-const invitations = require('./routes/invitations');
-const inviteCodes = require('./routes/inviteCodes');
+const routes = require("./routes");
 
 router.use(cors());
 router.use('/doc', express.static('apidoc'));
@@ -22,18 +16,7 @@ router.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 router.use(auth);
-
-router.use('/permissions', permissions);
-router.use(requisitions);
-router.use(inviteCodes);
-router.use('/communities', communities);
-router.use('/invitations', invitations);
-
-// The 404 Route (ALWAYS Keep this as the last route)
-router.get('*', (req, res) => {
-  return http.notFound(req, res);
-});
-
+router.use(routes);
 exports.api = functions.https.onRequest(router);
 
 

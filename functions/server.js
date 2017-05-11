@@ -13,12 +13,7 @@ const cors = require('cors')({origin: true});
 const router = new express.Router();
 const bodyParser = require('body-parser');
 const fakeAuth = require('./routes/libs/fakeAuth');
-const requisitions = require('./routes/requisitions');
-const communities = require('./routes/communities');
-const permissions = require('./routes/permissions');
-const invitations = require('./routes/invitations');
-const inviteCodes = require('./routes/inviteCodes');
-const http = require("./routes/libs/http");
+const routes = require("./routes");
 
 router.use(cors);
 router.use(bodyParser.json());       // to support JSON-encoded bodies
@@ -28,16 +23,7 @@ router.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 router.use('/doc', express.static('apidoc'));
 router.use(fakeAuth);
 
-router.use('/permissions', permissions);
-router.use(requisitions);
-router.use(inviteCodes);
-router.use('/communities', communities);
-router.use('/invitations', invitations);
-
-// The 404 Route (ALWAYS Keep this as the last route)
-router.get('*', (req, res) => {
-  http.notFound(req, res);
-});
+router.use(routes);
 
 var app = express();
 // 將路由套用至應用程式
