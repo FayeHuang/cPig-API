@@ -24,9 +24,9 @@ const getOwn = (communityId, uid) => {
       
       return Promise.all(process).then(data => {
         if (data.length === 1)
-          result.message = data[0];
+          result = data[0];
         else
-          result.message = merge.all(data);
+          result = merge.all(data);
         return result;
       });
     }
