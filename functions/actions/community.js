@@ -98,6 +98,63 @@ const isOwner = (id, ownerId) => {
   })
 }
 
+const getHousehold = (communityId, householdId) => {
+  return db.ref(`Households/${communityId}/${householdId}`).once('value').then(snapshot => {
+    var result = {};
+    if (snapshot.val()) {
+      result[communityId] = {households:{}};
+      result[communityId]['households'][householdId] = snapshot.val();
+    }
+    return result;
+  })
+}
+
+const getHouseholdDetail = (uid, communityId) => {
+  return db.ref(`UserRoles/${uid}/households/${communityId}`).once('value').then(snapshot => {
+    var result = {};
+    if (snapshot.val()) {
+      var process = [];
+      result[communityId] = {households:{}};
+      snapshot.forEach(childSnapshot => {
+        const householdId = childSnapshot.key;
+        result[communityId]['households'][householdId] = {roles:childSnapshot.val()};
+        process.push( getHousehold(communityId, householdId) );
+      })
+      
+      return Promise.all(process).then(data => {
+        data.push(result);
+        result = merge.all(data);
+        return result;
+      });
+    }
+    else
+      return result;
+  })  
+}
+
+const getDetail = (uid) => {
+  return db.ref(`UserRoles/${uid}/communities`).once('value').then(snapshot => {
+    var result = {};
+    if (snapshot.val()) {
+      var process = [];
+      snapshot.forEach(childSnapshot => {
+        const communityId = childSnapshot.key;
+        result[communityId] = {roles:childSnapshot.val()};
+        process.push( getHouseholdDetail(uid, communityId) );
+        process.push( getOne(communityId) );
+      })
+      
+      return Promise.all(process).then(data => {
+        data.push(result);
+        result = merge.all(data);
+        return result;
+      });
+    }
+    else
+      return result;
+  })
+}
+
 module.exports = {
   getAll: getAll,
   getOne: getOne,
@@ -105,6 +162,7 @@ module.exports = {
   getSN: getSN,
   getCommunityBySN: getCommunityBySN,
   getRolePermission: getRolePermission,
+  getDetail: getDetail,
   modify: modify,
   isExist: isExist,
   isOwner: isOwner,

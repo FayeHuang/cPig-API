@@ -58,6 +58,7 @@ router.use(householdRequisitions);
     DELETE  /communities/:communityId
     GET     /communities/:communityId/sn
     POST    /user/communitySn/verify
+    GET     /user/communities
 */
 router.use(communities);
 
