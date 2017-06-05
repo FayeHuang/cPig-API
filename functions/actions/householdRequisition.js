@@ -1,48 +1,29 @@
 const admin = require('firebase-admin');
 const db = admin.database();
+const merge = require("deepmerge");
 
 const randomstring = require("../routes/libs/randomstring");
 const householdMember = require("./householdMember");
 const household = require("./household");
 
 
-const getAll = () => {
-  return db.ref(`HouseholdRequisitions`).once('value').then(snapshot => {
-    var result = {};
-    if (snapshot.val())  
-      result = snapshot.val();
-    return result;
-  })
-}
-
-const getOwn = (ownerId) => {
-  return db.ref(`HouseholdRequisitions`).orderByChild('createUser').equalTo(ownerId).once('value').then(snapshot => {
-    var result = {};
-    if (snapshot.val())  
-      result = snapshot.val();
-    return result;
-  })
-}
-
-const getAllInCommunity = (communityId) => {
-  return db.ref(`HouseholdRequisitions`).orderByChild('community').equalTo(communityId).once('value').then(snapshot => {
-    var result = {};
-    if (snapshot.val())  
-      result = snapshot.val();
-    return result;
-  })
-}
-
-const getOwnInCommunity = (communityId, uid) => {
-  return db.ref(`HouseholdRequisitions`).orderByChild('community').equalTo(communityId).once('value').then(snapshot => {
+const _getCommunity = (householdReqId, communityId) => {
+  return db.ref(`Communities/${communityId}`).once('value').then(snapshot => {
     var result = {};
     if (snapshot.val()) {
-      snapshot.forEach(childSnapshot => {
-        const createUser = childSnapshot.val().createUser;
-        const id = childSnapshot.key;
-        if (createUser === uid)
-          result[id] = childSnapshot.val();
-      })
+      result[householdReqId] = {community:{}};
+      result[householdReqId]['community'][communityId] = snapshot.val();
+    }
+    return result;
+  })
+}
+
+const _getUser = (householdReqId, uid) => {
+  return db.ref(`Users/${uid}`).once('value').then(snapshot => {
+    var result = {};
+    if (snapshot.val()) {
+      result[householdReqId] = {createUser:{}};
+      result[householdReqId]['createUser'][uid] = snapshot.val();
     }
     return result;
   })
@@ -51,9 +32,65 @@ const getOwnInCommunity = (communityId, uid) => {
 const getOne = (id) => {
   return db.ref(`HouseholdRequisitions/${id}`).once('value').then(snapshot => {
     var result = {};
-    if (snapshot.val())
-      result[id] = snapshot.val();
-    return result;
+    if (snapshot.val()) {
+      var process = [];
+      var data = snapshot.val();
+      process.push( _getCommunity(id, data.community) );
+      process.push( _getUser(id, data.createUser) );
+      delete data.community;
+      delete data.createUser;
+      result[id] = data;
+      
+      return Promise.all(process).then(data => {
+        data.push(result);
+        result = merge.all(data);
+        return result;
+      });
+    }
+    else
+      return result;
+  })
+}
+
+const _mergeAll = (householdIds) => {
+  const process = householdIds.map(id => getOne(id));
+  return Promise.all(process).then(data => {
+    return data.length > 1 ? merge.all(data):data[0];
+  });
+}
+
+const getAll = () => {
+  return db.ref(`HouseholdRequisitions`).once('value').then(snapshot => {
+    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val()) ) : {};
+  })
+}
+
+const getOwn = (ownerId) => {
+  return db.ref(`HouseholdRequisitions`).orderByChild('createUser').equalTo(ownerId).once('value').then(snapshot => {
+    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val()) ) : {};
+  })
+}
+
+const getAllInCommunity = (communityId) => {
+  return db.ref(`HouseholdRequisitions`).orderByChild('community').equalTo(communityId).once('value').then(snapshot => {
+    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val()) ) : {};
+  })
+}
+
+const getOwnInCommunity = (communityId, uid) => {
+  return db.ref(`HouseholdRequisitions`).orderByChild('community').equalTo(communityId).once('value').then(snapshot => {
+    if (snapshot.val()) {
+      var list = [];
+      snapshot.forEach(childSnapshot => {
+        const createUser = childSnapshot.val().createUser;
+        const id = childSnapshot.key;
+        if (createUser === uid)
+          list.push(id);
+      })
+      return list.length > 0 ? _mergeAll(list):{};
+    }
+    else
+      return {};
   })
 }
 
