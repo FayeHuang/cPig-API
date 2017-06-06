@@ -1,34 +1,59 @@
 const admin = require('firebase-admin');
 const db = admin.database();
+const merge = require("deepmerge");
 
 const randomstring = require("../routes/libs/randomstring");
 const community = require("./community");
 const communityMember = require("./communityMember");
 
-const getAll = () => {
-  return db.ref(`CommunityRequisitions`).once('value').then(snapshot => {
+const _getUser = (communityId, uid) => {
+  return db.ref(`Users/${uid}`).once('value').then(snapshot => {
     var result = {};
-    if (snapshot.val())  
-      result = snapshot.val();
+    if (snapshot.val())
+      result[communityId] = {
+        createUser: Object.assign({id:uid},snapshot.val())
+      };
     return result;
   })
 }
 
-const getOwn = (uid) => {
-  return db.ref(`CommunityRequisitions`).orderByChild('createUser').equalTo(uid).once('value').then(snapshot => {
-    var result = {};
-    if (snapshot.val())
-      result = snapshot.val();
-    return result;
-  })
+const _mergeAll = (communityId) => {
+  const process = communityId.map(id => getOne(id));
+  return Promise.all(process).then(data => {
+    return data.length > 1 ? merge.all(data):data[0];
+  });
 }
 
 const getOne = (id) => {
   return db.ref(`CommunityRequisitions/${id}`).once('value').then(snapshot => {
     var result = {};
-    if (snapshot.val())
-      result[id] = snapshot.val();
-    return result;
+    if (snapshot.val()) {
+      var process = [];
+      var data = snapshot.val();
+      process.push( _getUser(id, data.createUser) );
+      delete data.createUser;
+      result[id] = data;
+      
+      return Promise.all(process).then(data => {
+        data.push(result);
+        result = merge.all(data);
+        return result;
+      });
+    }
+    else
+      return result;
+  })
+}
+
+const getAll = () => {
+  return db.ref(`CommunityRequisitions`).once('value').then(snapshot => {
+    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val()) ) : {};
+  })
+}
+
+const getOwn = (uid) => {
+  return db.ref(`CommunityRequisitions`).orderByChild('createUser').equalTo(uid).once('value').then(snapshot => {
+    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val()) ) : {};
   })
 }
 

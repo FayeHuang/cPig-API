@@ -21,10 +21,10 @@ const _getCommunity = (householdReqId, communityId) => {
 const _getUser = (householdReqId, uid) => {
   return db.ref(`Users/${uid}`).once('value').then(snapshot => {
     var result = {};
-    if (snapshot.val()) {
-      result[householdReqId] = {createUser:{}};
-      result[householdReqId]['createUser'][uid] = snapshot.val();
-    }
+    if (snapshot.val())
+      result[householdReqId] = {
+        createUser: Object.assign({id:uid},snapshot.val())
+      };
     return result;
   })
 }
