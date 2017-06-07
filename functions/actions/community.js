@@ -163,6 +163,7 @@ const getDetail = (uid, communityId) => {
       result[communityId] = {roles:snapshot.val()};
       process.push( getHouseholdDetail(uid, communityId) );
       process.push( getOne(communityId) );
+      process.push( getSN(communityId) );
       
       return Promise.all(process).then(data => {
         data.push(result);
