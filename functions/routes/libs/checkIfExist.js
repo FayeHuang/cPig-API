@@ -236,6 +236,7 @@ router.use('/user/permissions/community/:communityId/household/:householdId/role
 router.use('/user/communityRequisitions/:communityReqId*', checkCommunityRequisition);
 router.use('/user/householdRequisitions/:householdReqId*', checkHouseholdRequisition);
 router.use('/user/invitations/:invitationId*', checkInvitation);
+router.use('/user/communities/:communityId*', checkCommunity);
 
 router.use('/communities/:communityId*', checkCommunity);
 router.use('/communities/:communityId/role/:role*', checkCommunityRole);

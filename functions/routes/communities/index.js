@@ -5,8 +5,10 @@ const communities = require("./communities");
 const community = require("./community");
 const communitySnVerify = require("./communitySnVerify");
 const communitiesDetail = require("./communitiesDetail");
+const communityDetail = require("./communityDetail");
 
 router.use('/user/communities', communitiesDetail);
+router.use('/user/communities/:communityId', communityDetail);
 router.use('/user/communitySn/verify', communitySnVerify);
 router.use('/communities', communities);
 router.use('/communities/:communityId', community);
@@ -17,8 +19,58 @@ module.exports = router;
 //  [GET]     /user/communities
 /**
  * @api {get} /user/communities Read detail data of communities
- * @apiName GetOwnCommunities
+ * @apiName GetOwnCommunitiesDetail
  * @apiGroup Communities
+ *
+ * @apiSuccess {Boolean}  success                     API 執行成功與否
+ * @apiSuccess {Object}   message                     執行結果
+ * @apiSuccess {Object}   message.communityId         社區 ID
+ * @apiSuccess {String}   message.communityId.address 社區位址
+ * @apiSuccess {String}   message.communityId.name    社區名稱
+ * @apiSuccess {Object}   message.communityId.roles   所屬角色
+ * @apiSuccess {String}   message.communityId.roles.role 角色名稱 (ex: COMMUNITY_ADMIN)
+ * @apiSuccess {Object}   message.communityId.households  住戶資料
+ * @apiSuccess {Object}   message.communityId.households.householdId  住戶 ID
+ * @apiSuccess {String}   message.communityId.households.householdId.floor  住戶樓層
+ * @apiSuccess {String}   message.communityId.households.householdId.number 住戶門牌號碼
+ * @apiSuccess {Object}   message.communityId.households.householdId.roles  所屬角色
+ * @apiSuccess {Object}   message.communityId.households.householdId.roles.role 角色名稱 (ex: RESIDENT_ADMIN)
+ * 
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+{
+  "success": true,
+  "message": {
+    "VrlwXx2V6retICfR": {
+      "households": {
+        "YZyIzcg5A9xINOaC": {
+          "floor": "37",
+          "number": "37",
+          "roles": {
+            "RESIDENT_ADMIN": true
+          }
+        }
+      },
+      "address": "community 187 address",
+      "name": "community 187",
+      "roles": {
+        "RESIDENT_ADMIN": true
+      }
+    }
+  }
+}
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
+ 
+//  [GET]     /user/communities/:communityId
+/**
+ * @api {get} /user/communities Read detail data of the community
+ * @apiName GetOwnCommunityDetail
+ * @apiGroup Communities
+ * 
+ * @apiParam {String} communityId 社區 ID
  *
  * @apiSuccess {Boolean}  success                     API 執行成功與否
  * @apiSuccess {Object}   message                     執行結果

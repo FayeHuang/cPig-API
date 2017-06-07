@@ -132,7 +132,7 @@ const getHouseholdDetail = (uid, communityId) => {
   })  
 }
 
-const getDetail = (uid) => {
+const getAllDetail = (uid) => {
   return db.ref(`UserRoles/${uid}/communities`).once('value').then(snapshot => {
     var result = {};
     if (snapshot.val()) {
@@ -155,6 +155,26 @@ const getDetail = (uid) => {
   })
 }
 
+const getDetail = (uid, communityId) => {
+  return db.ref(`UserRoles/${uid}/communities/${communityId}`).once('value').then(snapshot => {
+    var result = {};
+    if (snapshot.val()) {
+      var process = [];
+      result[communityId] = {roles:snapshot.val()};
+      process.push( getHouseholdDetail(uid, communityId) );
+      process.push( getOne(communityId) );
+      
+      return Promise.all(process).then(data => {
+        data.push(result);
+        result = merge.all(data);
+        return result;
+      });
+    }
+    else
+      return result;
+  })
+}
+
 module.exports = {
   getAll: getAll,
   getOne: getOne,
@@ -163,6 +183,7 @@ module.exports = {
   getCommunityBySN: getCommunityBySN,
   getRolePermission: getRolePermission,
   getDetail: getDetail,
+  getAllDetail: getAllDetail,
   modify: modify,
   isExist: isExist,
   isOwner: isOwner,
