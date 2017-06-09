@@ -239,9 +239,11 @@ router.use('/user/invitations/:invitationId*', checkInvitation);
 router.use('/user/communities/:communityId*', checkCommunity);
 
 router.use('/communities/:communityId*', checkCommunity);
+router.use('/communitiesDetail/:communityId*', checkCommunity);
 router.use('/communities/:communityId/role/:role*', checkCommunityRole);
 router.use('/communities/:communityId/role/:role/invitations/:invitationId*', checkCommunityRoleInvitation);
 router.use('/communities/:communityId/households/:householdId*', checkHouseholdInCommunity);
+router.use('/communities/:communityId/householdsDetail/:householdId*', checkHouseholdInCommunity);
 router.use('/communities/:communityId/households/:householdId/role/:role*', checkHouseholdRole);
 router.use('/communities/:communityId/households/:householdId/role/:role/invitations/:invitationId*', checkHouseholdRoleInvitation);
 router.use('/communities/:communityId/householdRequisitions/:householdReqId*', checkHouseholdRequisitionInCommunity);

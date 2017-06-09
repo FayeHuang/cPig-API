@@ -26,9 +26,11 @@ router.route('/')
   if (!req.body.name || !req.body.address )
     return http.badRequest(req, res, `'name' and 'address' is required`);
   
-  const data = {name:req.body.name, address:req.body.address, createUser:req.user.uid};
   if (permission.isAllowed(req.user.permission,'CommunityRequisitions:create'))
-    communityRequisition.create(data).then(result => { return http.success(req, res, result) })
+    communityRequisition.create(req.body.name, req.body.address, req.user.uid)
+    .then(result => { 
+      return http.success(req, res, result) 
+    })
   else
     return http.permissionDenied(req, res);
 })

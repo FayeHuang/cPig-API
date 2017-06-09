@@ -26,43 +26,61 @@ module.exports = router;
  * @apiParam (Query string) {Boolean} [all] if true, 取得所有住戶申請單. if false, 取得使用者的住戶申請單.
  *
  * @apiSuccess {Boolean}  success                           API 執行成功與否
- * @apiSuccess {Object}   message                           執行結果
- * @apiSuccess {Object}   message.householdReqId            住戶申請單 ID
- * @apiSuccess {Object}   message.householdReqId.community  社區資料
- * @apiSuccess {Object}   message.householdReqId.community.communityId         社區 ID
- * @apiSuccess {String}   message.householdReqId.community.communityId.address 社區地址
- * @apiSuccess {String}   message.householdReqId.community.communityId.name    社區名稱
- * @apiSuccess {Object}   message.householdReqId.createUser 住戶申請單建立人資料
- * @apiSuccess {Object}   message.householdReqId.createUser.userId 住戶申請單建立人 ID
- * @apiSuccess {String}   message.householdReqId.createUser.userId.email 住戶申請單建立人 Email
- * @apiSuccess {String}   message.householdReqId.createUser.userId.name 住戶申請單建立人暱稱
- * @apiSuccess {String}   message.householdReqId.createUser.userId.photo 住戶申請單建立人大頭貼
- * @apiSuccess {String}   message.householdReqId.floor      新住戶樓層
- * @apiSuccess {String}   message.householdReqId.number     新住戶門牌號碼
+ * @apiSuccess {Object[]}   message                           執行結果
+ * @apiSuccess {String}   message.id          住戶申請單 ID
+ * @apiSuccess {String}   message.floor       新住戶樓層
+ * @apiSuccess {String}   message.number      新住戶門牌號碼
+ * @apiSuccess {String}   message.createTime  申請單建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.community  社區
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
+ * @apiSuccess {Object}   message.owner 住戶申請單建立人
+ * @apiSuccess {String}   message.owner.id  建立人 ID
+ * @apiSuccess {String}   message.owner.email  建立人 Email
+ * @apiSuccess {String}   message.owner.name  建立人暱稱
+ * @apiSuccess {String}   message.owner.photo  建立人大頭貼
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
-  "message": {
-    "RAj6cphyrHjzIqf8": {
+  "message": [
+    {
+      "id": "IoeQIVJyiPKfziGF",
       "community": {
-        "VrlwXx2V6retICfR": {
-          "address": "community 187 address",
-          "name": "community 187"
-        }
-      },
-      "createUser": {
-        "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
+        "id": "WIOmgnw9Og37fk73",
+        "address": "community 712 address",
+        "createTime": 1496991275991,
+        "createUser": {
+          "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
           "email": "root@cpig.com",
           "name": "system_admin",
           "photo": ""
-        }
+        },
+        "name": "community 712",
+        "photo": "",
+        "sn": "016993"
       },
-      "floor": "666",
-      "number": "666"
+      "createTime": 1496992255232,
+      "floor": "674",
+      "number": "674",
+      "owner": {
+        "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+        "email": "root@cpig.com",
+        "name": "system_admin",
+        "photo": ""
+      }
     }
-  }
+  ]
 }
  *
  * @apiUse Header
@@ -79,40 +97,56 @@ module.exports = router;
  * 
  * @apiSuccess {Boolean}  success                           API 執行成功與否
  * @apiSuccess {Object}   message                           執行結果
- * @apiSuccess {Object}   message.householdReqId            住戶申請單 ID
- * @apiSuccess {Object}   message.householdReqId.community  社區資料
- * @apiSuccess {Object}   message.householdReqId.community.communityId         社區 ID
- * @apiSuccess {String}   message.householdReqId.community.communityId.address 社區地址
- * @apiSuccess {String}   message.householdReqId.community.communityId.name    社區名稱
- * @apiSuccess {Object}   message.householdReqId.createUser 住戶申請單建立人資料
- * @apiSuccess {Object}   message.householdReqId.createUser.userId 住戶申請單建立人 ID
- * @apiSuccess {String}   message.householdReqId.createUser.userId.email 住戶申請單建立人 Email
- * @apiSuccess {String}   message.householdReqId.createUser.userId.name 住戶申請單建立人暱稱
- * @apiSuccess {String}   message.householdReqId.createUser.userId.photo 住戶申請單建立人大頭貼
- * @apiSuccess {String}   message.householdReqId.floor      新住戶樓層
- * @apiSuccess {String}   message.householdReqId.number     新住戶門牌號碼
+ * @apiSuccess {String}   message.id          住戶申請單 ID
+ * @apiSuccess {String}   message.floor       新住戶樓層
+ * @apiSuccess {String}   message.number      新住戶門牌號碼
+ * @apiSuccess {String}   message.createTime  申請單建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.community  社區
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
+ * @apiSuccess {Object}   message.owner 住戶申請單建立人
+ * @apiSuccess {String}   message.owner.id  建立人 ID
+ * @apiSuccess {String}   message.owner.email  建立人 Email
+ * @apiSuccess {String}   message.owner.name  建立人暱稱
+ * @apiSuccess {String}   message.owner.photo  建立人大頭貼
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
   "message": {
-    "RAj6cphyrHjzIqf8": {
-      "community": {
-        "VrlwXx2V6retICfR": {
-          "address": "community 187 address",
-          "name": "community 187"
-        }
-      },
+    "id": "IoeQIVJyiPKfziGF",
+    "community": {
+      "id": "WIOmgnw9Og37fk73",
+      "address": "community 712 address",
+      "createTime": 1496991275991,
       "createUser": {
-        "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
-          "email": "root@cpig.com",
-          "name": "system_admin",
-          "photo": ""
-        }
+        "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+        "email": "root@cpig.com",
+        "name": "system_admin",
+        "photo": ""
       },
-      "floor": "666",
-      "number": "666"
+      "name": "community 712",
+      "photo": "",
+      "sn": "016993"
+    },
+    "createTime": 1496992255232,
+    "floor": "674",
+    "number": "674",
+    "owner": {
+      "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+      "email": "root@cpig.com",
+      "name": "system_admin",
+      "photo": ""
     }
   }
 }
@@ -152,43 +186,37 @@ module.exports = router;
  * @apiParam (Query string) {Boolean} [all] if true, 取得所有住戶申請單. if false, 取得使用者的住戶申請單.
  *
  * @apiSuccess {Boolean}  success                           API 執行成功與否
- * @apiSuccess {Object}   message                           執行結果
- * @apiSuccess {Object}   message.householdReqId            住戶申請單 ID
- * @apiSuccess {Object}   message.householdReqId.community  社區資料
- * @apiSuccess {Object}   message.householdReqId.community.communityId         社區 ID
- * @apiSuccess {String}   message.householdReqId.community.communityId.address 社區地址
- * @apiSuccess {String}   message.householdReqId.community.communityId.name    社區名稱
- * @apiSuccess {Object}   message.householdReqId.createUser 住戶申請單建立人資料
- * @apiSuccess {Object}   message.householdReqId.createUser.userId 住戶申請單建立人 ID
- * @apiSuccess {String}   message.householdReqId.createUser.userId.email 住戶申請單建立人 Email
- * @apiSuccess {String}   message.householdReqId.createUser.userId.name 住戶申請單建立人暱稱
- * @apiSuccess {String}   message.householdReqId.createUser.userId.photo 住戶申請單建立人大頭貼
- * @apiSuccess {String}   message.householdReqId.floor      新住戶樓層
- * @apiSuccess {String}   message.householdReqId.number     新住戶門牌號碼
+ * @apiSuccess {Object[]}   message                           執行結果
+ * @apiSuccess {String}   message.id          住戶申請單 ID
+ * @apiSuccess {String}   message.floor       新住戶樓層
+ * @apiSuccess {String}   message.number      新住戶門牌號碼
+ * @apiSuccess {String}   message.createTime  申請單建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community  社區 ID
+ * @apiSuccess {Object}   message.owner 住戶申請單建立人
+ * @apiSuccess {String}   message.owner.id  建立人 ID
+ * @apiSuccess {String}   message.owner.email  建立人 Email
+ * @apiSuccess {String}   message.owner.name  建立人暱稱
+ * @apiSuccess {String}   message.owner.photo  建立人大頭貼
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
-  "message": {
-    "RAj6cphyrHjzIqf8": {
-      "community": {
-        "VrlwXx2V6retICfR": {
-          "address": "community 187 address",
-          "name": "community 187"
-        }
-      },
-      "createUser": {
-        "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
-          "email": "root@cpig.com",
-          "name": "system_admin",
-          "photo": ""
-        }
-      },
-      "floor": "666",
-      "number": "666"
+  "message": [
+    {
+      "id": "IoeQIVJyiPKfziGF",
+      "community": "WIOmgnw9Og37fk73",
+      "createTime": 1496992255232,
+      "floor": "674",
+      "number": "674",
+      "owner": {
+        "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+        "email": "root@cpig.com",
+        "name": "system_admin",
+        "photo": ""
+      }
     }
-  }
+  ]
 }
  *
  * @apiUse Header
@@ -214,23 +242,32 @@ module.exports = router;
  *
  * @apiSuccess {Boolean}  success                           API 執行成功與否
  * @apiSuccess {Object}   message                           執行結果
- * @apiSuccess {Object}   message.householdReqId            住戶申請單 ID
- * @apiSuccess {String}   message.householdReqId.community  社區 ID
- * @apiSuccess {String}   message.householdReqId.createUser 住戶申請單建立人
- * @apiSuccess {String}   message.householdReqId.floor      新住戶樓層
- * @apiSuccess {String}   message.householdReqId.number     新住戶門牌號碼
- * 
+ * @apiSuccess {String}   message.id          住戶申請單 ID
+ * @apiSuccess {String}   message.floor       新住戶樓層
+ * @apiSuccess {String}   message.number      新住戶門牌號碼
+ * @apiSuccess {String}   message.createTime  申請單建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community  社區 ID
+ * @apiSuccess {Object}   message.owner 住戶申請單建立人
+ * @apiSuccess {String}   message.owner.id  建立人 ID
+ * @apiSuccess {String}   message.owner.email  建立人 Email
+ * @apiSuccess {String}   message.owner.name  建立人暱稱
+ * @apiSuccess {String}   message.owner.photo  建立人大頭貼
  *
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
   "message": {
-    "RAj6cphyrHjzIqf8": {
-      "community": "VrlwXx2V6retICfR",
-      "createUser": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
-      "floor": "12",
-      "number": "66"
+    "id": "IoeQIVJyiPKfziGF",
+    "community": "WIOmgnw9Og37fk73",
+    "createTime": 1496992255232,
+    "floor": "674",
+    "number": "674",
+    "owner": {
+      "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+      "email": "root@cpig.com",
+      "name": "system_admin",
+      "photo": ""
     }
   }
 }
@@ -250,40 +287,32 @@ module.exports = router;
  * 
  * @apiSuccess {Boolean}  success                           API 執行成功與否
  * @apiSuccess {Object}   message                           執行結果
- * @apiSuccess {Object}   message.householdReqId            住戶申請單 ID
- * @apiSuccess {Object}   message.householdReqId.community  社區資料
- * @apiSuccess {Object}   message.householdReqId.community.communityId         社區 ID
- * @apiSuccess {String}   message.householdReqId.community.communityId.address 社區地址
- * @apiSuccess {String}   message.householdReqId.community.communityId.name    社區名稱
- * @apiSuccess {Object}   message.householdReqId.createUser 住戶申請單建立人資料
- * @apiSuccess {Object}   message.householdReqId.createUser.userId 住戶申請單建立人 ID
- * @apiSuccess {String}   message.householdReqId.createUser.userId.email 住戶申請單建立人 Email
- * @apiSuccess {String}   message.householdReqId.createUser.userId.name 住戶申請單建立人暱稱
- * @apiSuccess {String}   message.householdReqId.createUser.userId.photo 住戶申請單建立人大頭貼
- * @apiSuccess {String}   message.householdReqId.floor      新住戶樓層
- * @apiSuccess {String}   message.householdReqId.number     新住戶門牌號碼
+ * @apiSuccess {String}   message.id          住戶申請單 ID
+ * @apiSuccess {String}   message.floor       新住戶樓層
+ * @apiSuccess {String}   message.number      新住戶門牌號碼
+ * @apiSuccess {String}   message.createTime  申請單建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community  社區 ID
+ * @apiSuccess {Object}   message.owner 住戶申請單建立人
+ * @apiSuccess {String}   message.owner.id  建立人 ID
+ * @apiSuccess {String}   message.owner.email  建立人 Email
+ * @apiSuccess {String}   message.owner.name  建立人暱稱
+ * @apiSuccess {String}   message.owner.photo  建立人大頭貼
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
   "message": {
-    "RAj6cphyrHjzIqf8": {
-      "community": {
-        "VrlwXx2V6retICfR": {
-          "address": "community 187 address",
-          "name": "community 187"
-        }
-      },
-      "createUser": {
-        "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
-          "email": "root@cpig.com",
-          "name": "system_admin",
-          "photo": ""
-        }
-      },
-      "floor": "666",
-      "number": "666"
+    "id": "IoeQIVJyiPKfziGF",
+    "community": "WIOmgnw9Og37fk73",
+    "createTime": 1496992255232,
+    "floor": "674",
+    "number": "674",
+    "owner": {
+      "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+      "email": "root@cpig.com",
+      "name": "system_admin",
+      "photo": ""
     }
   }
 }
@@ -324,9 +353,15 @@ module.exports = router;
  * 
  * @apiSuccess {Boolean}  success                     API 執行成功與否
  * @apiSuccess {Object}   message                     執行結果
- * @apiSuccess {Object}   message.householdId         住戶 ID
- * @apiSuccess {String}   message.householdId.floor   住戶樓層
- * @apiSuccess {String}   message.householdId.number  住戶門牌號碼
+ * @apiSuccess {String}   message.id         住戶 ID
+ * @apiSuccess {String}   message.floor   住戶樓層
+ * @apiSuccess {String}   message.number  住戶門牌號碼
+ * @apiSuccess {String}   message.createTime  住戶建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.createUser 住戶建立人
+ * @apiSuccess {String}   message.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.createUser.photo  建立人大頭貼
  *
  *
  * @apiSuccessExample Success-Response:
@@ -334,10 +369,16 @@ module.exports = router;
 {
   "success": true,
   "message": {
-    "7r4B6XI77dMSBSBH": {
-      "floor": "12",
-      "number": 68
-    }
+    "id": "CEy3MLm11pnHq83G",
+    "createTime": 1496993877818,
+    "createUser": {
+      "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+      "email": "root@cpig.com",
+      "name": "system_admin",
+      "photo": ""
+    },
+    "floor": "674",
+    "number": "674"
   }
 }
  *

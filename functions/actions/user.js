@@ -4,9 +4,11 @@ const db = admin.database();
 const getOne = (id) => {
   return db.ref(`Users/${id}`).once('value').then(snapshot => {
     var result = {};
-    var data = snapshot.val();
-    delete data.isPublic;
-    result[id] = data;
+    if (snapshot.val()) {
+      var data = snapshot.val();
+      delete data.isPublic
+      result = Object.assign({id:id},data);
+    }
     return result;
   })
 }

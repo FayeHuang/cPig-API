@@ -60,25 +60,4 @@ router.route('/')
 })
 .all((req, res) => {return http.methodNotAllowed(req, res)});
 
-
-/*
-  URL : /communities/:communityId/sn
-*/
-router.route('/sn')
-.get((req, res) => {
-  if (permission.isAllowed(req.user.permission, 'CommunitySNs:other:read'))
-    community.getSN(req.communityId).then(result => { return http.success(req, res, result) })
-  else if (permission.isAllowed(req.user.permission, 'CommunitySNs:own:read')) {
-    community.isOwner(req.communityId, req.user.uid).then(result => {
-      if (result) 
-        community.getSN(req.communityId).then(result => { return http.success(req, res, result) })
-      else
-        return http.permissionDenied(req, res);
-    })
-  }
-  else
-    return http.permissionDenied(req, res);
-})
-.all((req, res) => {return http.methodNotAllowed(req, res)});
-
 module.exports = router;

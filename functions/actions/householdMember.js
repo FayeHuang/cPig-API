@@ -1,8 +1,6 @@
 const admin = require('firebase-admin');
 const db = admin.database();
 const community = require("./community");
-const merge = require("deepmerge");
-
 const user = require("./user");
 
 const _addMember = (communityId, householdId, role, uid) => {
@@ -18,40 +16,30 @@ const _addMember = (communityId, householdId, role, uid) => {
   })
 }
 
+const getOne = (userId) => {
+  return user.getOne(userId)
+}
+
+const _mergeAll = (userIds) => {
+  const process = userIds.map(id => getOne(id));
+  return Promise.all(process).then(data => {
+    return [].concat(data);
+  });
+}
+
 const getAll = (householdId, role) => {
   return db.ref(`HouseholdMembers/${householdId}/${role}`).once('value').then(snapshot=> {
-    var result = {};
-    if (snapshot.val()) {
-      var process = [];
-      snapshot.forEach(childSnapshot => {
-        const userId = childSnapshot.key;
-        process.push(user.getOne(userId));
-      })
-      
-      return Promise.all(process).then(data => {
-        if (process.length === 1)
-          result = data[0]
-        else
-          result = merge.all(data)
-        return result
-      })
-    }
-    else
-      return result;
+    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val())):[];
   })
 }
 
 const getOwn = (householdId, role, ownerId) => {
   return db.ref(`HouseholdMembers/${householdId}/${role}/${ownerId}`).once('value').then(snapshot => {
     if (snapshot.val())
-      return user.getOne(ownerId);
+      return getOne(ownerId);
     else
       return {};
   })
-}
-
-const getOne = (userId) => {
-  return user.getOne(userId)
 }
 
 const remove = (communityId, householdId, role, userId) => {
@@ -69,12 +57,11 @@ const remove = (communityId, householdId, role, userId) => {
 const isExist = (householdId, role, userId) => {
   return db.ref(`HouseholdMembers/${householdId}/${role}/${userId}`).once('value').then(snapshot => {
     if (snapshot.val())
-      return snapshot.val();
+      return true;
     else
       return false;
   })
 }
-
 
 module.exports = {
   _addMember: _addMember,

@@ -1,49 +1,46 @@
 const admin = require('firebase-admin');
 const db = admin.database();
-const merge = require("deepmerge");
 
 const randomstring = require("../routes/libs/randomstring");
 const householdMember = require("./householdMember");
 const household = require("./household");
+const user = require("./user");
+const community = require("./community");
 
-
-const _getCommunity = (householdReqId, communityId) => {
-  return db.ref(`Communities/${communityId}`).once('value').then(snapshot => {
-    var result = {};
-    if (snapshot.val()) {
-      result[householdReqId] = {community:{}};
-      result[householdReqId]['community'][communityId] = snapshot.val();
-    }
+const create = (communityId, number, floor, ownerId) => {
+  const id = randomstring.uuid();
+  const createTime = new Date();
+  const createTimestamp = createTime.getTime();
+  return db.ref(`HouseholdRequisitions/${id}`).set({
+    community:communityId,
+    number:number,
+    floor:floor,
+    owner:ownerId,
+    createTime:createTimestamp
+  }).then(() => {
+    return getOne(id, false);
+  }).then(result => {
     return result;
   })
 }
 
-const _getUser = (householdReqId, uid) => {
-  return db.ref(`Users/${uid}`).once('value').then(snapshot => {
-    var result = {};
-    if (snapshot.val())
-      result[householdReqId] = {
-        createUser: Object.assign({id:uid},snapshot.val())
-      };
-    return result;
-  })
-}
-
-const getOne = (id) => {
+const getOne = (id, showCommunityDetail) => {
+  const communityDetail = showCommunityDetail ? showCommunityDetail:false;
   return db.ref(`HouseholdRequisitions/${id}`).once('value').then(snapshot => {
     var result = {};
     if (snapshot.val()) {
       var process = [];
-      var data = snapshot.val();
-      process.push( _getCommunity(id, data.community) );
-      process.push( _getUser(id, data.createUser) );
-      delete data.community;
-      delete data.createUser;
-      result[id] = data;
+      const ownerId = snapshot.val().owner;
+      const communityId = snapshot.val().community;
+      process.push( user.getOne(ownerId) );
+      if (communityDetail)
+        process.push( community.getOne(communityId) );
+      result = Object.assign({id:id},snapshot.val());
       
       return Promise.all(process).then(data => {
-        data.push(result);
-        result = merge.all(data);
+        result.owner = data[0];
+        if (communityDetail)
+          result.community = data[1];
         return result;
       });
     }
@@ -52,54 +49,44 @@ const getOne = (id) => {
   })
 }
 
-const _mergeAll = (householdIds) => {
-  const process = householdIds.map(id => getOne(id));
+const _mergeAll = (householdIds, showCommunityDetail) => {
+  const communityDetail = showCommunityDetail ? showCommunityDetail:false;
+  const process = householdIds.map(id => getOne(id, communityDetail));
   return Promise.all(process).then(data => {
-    return data.length > 1 ? merge.all(data):data[0];
+    return [].concat(data);
   });
 }
 
 const getAll = () => {
   return db.ref(`HouseholdRequisitions`).once('value').then(snapshot => {
-    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val()) ) : {};
+    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val()), true):[];
   })
 }
 
 const getOwn = (ownerId) => {
-  return db.ref(`HouseholdRequisitions`).orderByChild('createUser').equalTo(ownerId).once('value').then(snapshot => {
-    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val()) ) : {};
+  return db.ref(`HouseholdRequisitions`).orderByChild('owner').equalTo(ownerId).once('value').then(snapshot => {
+    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val()), true):[];
   })
 }
 
 const getAllInCommunity = (communityId) => {
   return db.ref(`HouseholdRequisitions`).orderByChild('community').equalTo(communityId).once('value').then(snapshot => {
-    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val()) ) : {};
+    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val()), false):[];
   })
 }
 
-const getOwnInCommunity = (communityId, uid) => {
+const getOwnInCommunity = (communityId, ownerId) => {
   return db.ref(`HouseholdRequisitions`).orderByChild('community').equalTo(communityId).once('value').then(snapshot => {
     if (snapshot.val()) {
       var list = [];
       snapshot.forEach(childSnapshot => {
-        const createUser = childSnapshot.val().createUser;
-        const id = childSnapshot.key;
-        if (createUser === uid)
-          list.push(id);
+        if (ownerId === childSnapshot.val().owner)
+          list.push(childSnapshot.key);
       })
-      return list.length > 0 ? _mergeAll(list):{};
+      return list.length > 0 ? _mergeAll(list, false):[];
     }
     else
-      return {};
-  })
-}
-
-const create = (data) => {
-  const id = randomstring.uuid();
-  return db.ref(`HouseholdRequisitions/${id}`).set(data).then(() => {
-    return getOne(id);
-  }).then(result => {
-    return result;
+      return [];
   })
 }
 
@@ -112,7 +99,7 @@ const remove = (id) => {
 const isExist = (id) => {
   return db.ref(`HouseholdRequisitions/${id}`).once('value').then(snapshot => {
     if (snapshot.val())
-      return snapshot.val();
+      return true;
     else
       return false;
   })
@@ -121,7 +108,7 @@ const isExist = (id) => {
 const isExistInCommunity = (communityId, id) => {
   return db.ref(`HouseholdRequisitions/${id}`).once('value').then(snapshot => {
     if (snapshot.val() && snapshot.val().community === communityId)
-      return snapshot.val();
+      return true;
     else
       return false;
   })
@@ -129,7 +116,7 @@ const isExistInCommunity = (communityId, id) => {
 
 const isOwner = (id, ownerId) => {
   return db.ref(`HouseholdRequisitions/${id}`).once('value').then(snapshot => {
-    if (snapshot.val().createUser === ownerId)
+    if (snapshot.val().owner === ownerId)
       return true;
     else
       return false;
@@ -137,15 +124,22 @@ const isOwner = (id, ownerId) => {
 }
 
 const verify = (id) => {
-  return getOne(id).then(result => {
+  return getOne(id, false).then(result => {
     const householdId = randomstring.uuid();
-    const floor = result[id].floor;
-    const number = result[id].number;
-    const targetUser = result[id].createUser;
-    const communityId = result[id].community;
+    const floor = result.floor;
+    const number = result.number;
+    const targetUser = result.owner.id;
+    const communityId = result.community;
+    const createTime = new Date();
+    const createTimestamp = createTime.getTime();
     return db.ref(`CommunityPermissions/${communityId}/RESIDENT_ADMIN`).once('value').then(snapshot => {
       var updates = {};
-      updates[`/Households/${communityId}/${householdId}`] = {number:number, floor:floor};
+      updates[`/Households/${communityId}/${householdId}`] = {
+        number:number, 
+        floor:floor, 
+        createUser:targetUser,
+        createTime:createTimestamp,
+      };
       updates[`/HouseholdPermissions/${householdId}/${targetUser}`] = snapshot.val();
       return db.ref().update(updates);
     }).then(() => {

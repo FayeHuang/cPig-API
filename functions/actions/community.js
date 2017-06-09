@@ -1,9 +1,29 @@
 const admin = require('firebase-admin');
 const db = admin.database();
-const merge = require("deepmerge");
+const user = require("./user");
+const household = require("./household");
+const communityMember = require("./communityMember");
+
+const getOne = (id) => {
+  return db.ref(`Communities/${id}`).once('value').then(snapshot => {
+    var result = {};
+    if (snapshot.val()) {
+      var process = [];
+      const createUserId = snapshot.val().createUser;
+      process.push( user.getOne(createUserId) );
+      result = Object.assign({id:id},snapshot.val());
+      return Promise.all(process).then(data => {
+        result.createUser = data[0];
+        return result;
+      });
+    }
+    else
+      return result;
+  })
+}
 
 const getCommunityBySN = (sn) => {
-  return db.ref(`CommunitySNs`).orderByChild('sn').equalTo(sn).once('value').then(snapshot => {
+  return db.ref(`Communities`).orderByChild('sn').equalTo(sn).once('value').then(snapshot => {
     if (snapshot.val()) {
       const communityId = Object.keys(snapshot.val())[0];
       return getOne(communityId).then(result => { return result })
@@ -13,62 +33,22 @@ const getCommunityBySN = (sn) => {
   })
 }
 
+const _mergeAll = (communityIds) => {
+  const process = communityIds.map(id => getOne(id));
+  return Promise.all(process).then(data => {
+    return [].concat(data);
+  });
+}
+
 const getAll = () => {
   return db.ref(`Communities`).once('value').then(snapshot => {
-    var result = {};
-    if (snapshot.val())  
-      result = snapshot.val();
-    return result;
+    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val()) ):[];
   })
 }
 
 const getOwn = (uid) => {
   return db.ref(`UserRoles/${uid}/communities`).once('value').then(snapshot => {
-    var result = {};
-    if (snapshot.val()) {
-      var process = [];
-      snapshot.forEach(childSnapshot => {
-        const communityId = childSnapshot.key;
-        process.push( getOne(communityId) );
-      })
-      
-      return Promise.all(process).then(data => {
-        if (data.length === 1)
-          result = data[0];
-        else
-          result = merge.all(data);
-        return result;
-      });
-    }
-    else
-      return result;
-  })
-}
-
-const getOne = (id) => {
-  return db.ref(`Communities/${id}`).once('value').then(snapshot => {
-    var result = {};
-    if (snapshot.val())
-      result[id] = snapshot.val();
-    return result;
-  })
-}
-
-const getSN = (id) => {
-  return db.ref(`CommunitySNs/${id}`).once('value').then(snapshot => {
-    var result = {};
-    if (snapshot.val())
-      result[id] = snapshot.val();
-    return result;
-  })
-}
-
-const getRolePermission = (id, role) => {
-  return db.ref(`CommunityPermissions/${id}/${role}`).once('value').then(snapshot => {
-    if (snapshot.val())
-      return snapshot.val()
-    else
-      return {};
+    return snapshot.val() ? _mergeAll( Object.keys(snapshot.val()) ):[];
   })
 }
 
@@ -83,7 +63,7 @@ const modify = (id, data) => {
 const isExist = (id) => {
   return db.ref(`Communities/${id}`).once('value').then(snapshot => {
     if (snapshot.val())
-      return snapshot.val();
+      return true;
     else
       return false;
   })
@@ -92,87 +72,102 @@ const isExist = (id) => {
 const isOwner = (id, ownerId) => {
   return db.ref(`UserRoles/${ownerId}/communities/${id}`).once('value').then(snapshot => {
     if (snapshot.val())
-      return snapshot.val();
+      return true;
     else
       return false;
   })
 }
 
-const getHousehold = (communityId, householdId) => {
-  return db.ref(`Households/${communityId}/${householdId}`).once('value').then(snapshot => {
-    var result = {};
-    if (snapshot.val()) {
-      result[communityId] = {households:{}};
-      result[communityId]['households'][householdId] = snapshot.val();
-    }
-    return result;
+const getRolePermission = (id, role) => {
+  return db.ref(`CommunityPermissions/${id}/${role}`).once('value').then(snapshot => {
+    if (snapshot.val())
+      return snapshot.val()
+    else
+      return {};
   })
 }
 
-const getHouseholdDetail = (uid, communityId) => {
-  return db.ref(`UserRoles/${uid}/households/${communityId}`).once('value').then(snapshot => {
-    var result = {};
-    if (snapshot.val()) {
-      var process = [];
-      result[communityId] = {households:{}};
-      snapshot.forEach(childSnapshot => {
-        const householdId = childSnapshot.key;
-        result[communityId]['households'][householdId] = {roles:childSnapshot.val()};
-        process.push( getHousehold(communityId, householdId) );
-      })
-      
-      return Promise.all(process).then(data => {
-        data.push(result);
-        result = merge.all(data);
-        return result;
-      });
-    }
-    else
-      return result;
-  })  
-}
+// ----- user dashboard page use -----
 
-const getAllDetail = (uid) => {
-  return db.ref(`UserRoles/${uid}/communities`).once('value').then(snapshot => {
-    var result = {};
-    if (snapshot.val()) {
-      var process = [];
-      snapshot.forEach(childSnapshot => {
-        const communityId = childSnapshot.key;
-        result[communityId] = {roles:childSnapshot.val()};
-        process.push( getHouseholdDetail(uid, communityId) );
-        process.push( getOne(communityId) );
-      })
-      
-      return Promise.all(process).then(data => {
-        data.push(result);
-        result = merge.all(data);
-        return result;
-      });
-    }
-    else
-      return result;
-  })
-}
-
-const getDetail = (uid, communityId) => {
+const getRoleDetail = (uid, communityId) => {
   return db.ref(`UserRoles/${uid}/communities/${communityId}`).once('value').then(snapshot => {
     var result = {};
     if (snapshot.val()) {
       var process = [];
-      result[communityId] = {roles:snapshot.val()};
-      process.push( getHouseholdDetail(uid, communityId) );
+      result.roles = Object.keys(snapshot.val())
       process.push( getOne(communityId) );
-      process.push( getSN(communityId) );
+      process.push( household.getRoleDetailInCommunity(uid, communityId) );
       
       return Promise.all(process).then(data => {
-        data.push(result);
-        result = merge.all(data);
+        result = Object.assign(data[0],result);
+        result.households = data[1];
         return result;
       });
     }
     else
       return result;
+  })
+}
+
+const getRoleDetailAll = (uid) => {
+  return db.ref(`UserRoles/${uid}/communities`).once('value').then(snapshot => {
+    if (snapshot.val()) {
+      const process = Object.keys(snapshot.val()).map(id => getRoleDetail(uid, id));
+      return Promise.all(process).then(data => {
+        return [].concat(data);
+      });
+    }
+    else
+      return [];
+  })
+}
+
+// ----- community detail page use -----
+
+const getMemberDetail = (communityId) => {
+  return db.ref(`Communities/${communityId}`).once('value').then(snapshot => {
+    var result = {};
+    if (snapshot.val()) {
+      var process = [];
+      process.push( getOne(communityId) );
+      process.push( communityMember.getAll(communityId, 'COMMUNITY_ADMIN') );
+      process.push( communityMember.getAll(communityId, 'GUARD') )
+      
+      return Promise.all(process).then(data => {
+        result = data[0];
+        result.COMMUNITY_ADMIN = data[1];
+        result.GUARD = data[2];
+        return result;
+      });
+    }
+    else
+      return result;
+  })
+}
+
+const getOwnMemberDetail = (uid) => {
+  return db.ref(`UserRoles/${uid}/communities`).once('value').then(snapshot => {
+    if (snapshot.val()) {
+      const process = Object.keys(snapshot.val()).map(id => getMemberDetail(id));
+      return Promise.all(process).then(data => {
+        return [].concat(data);
+      });
+    }
+    else
+      return [];
+  })
+}
+
+const getAllMemberDetail = () => {
+  return db.ref(`Communities`).once('value').then(snapshot => {
+    if (snapshot.val()) {
+      const process = Object.keys(snapshot.val()).map(id => getMemberDetail(id));
+      return Promise.all(process).then(data => {
+        return [].concat(data);
+      });
+    }
+    else
+      return [];
   })
 }
 
@@ -180,13 +175,15 @@ module.exports = {
   getAll: getAll,
   getOne: getOne,
   getOwn: getOwn,
-  getSN: getSN,
   getCommunityBySN: getCommunityBySN,
   getRolePermission: getRolePermission,
-  getDetail: getDetail,
-  getAllDetail: getAllDetail,
   modify: modify,
   isExist: isExist,
   isOwner: isOwner,
+  getRoleDetail: getRoleDetail,
+  getRoleDetailAll: getRoleDetailAll,
+  getMemberDetail: getMemberDetail,
+  getOwnMemberDetail: getOwnMemberDetail,
+  getAllMemberDetail: getAllMemberDetail,
 }
 

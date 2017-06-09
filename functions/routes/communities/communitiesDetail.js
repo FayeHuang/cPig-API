@@ -6,14 +6,22 @@ const permission = require("../libs/permission");
 const community = require("../../actions/community");
 
 /*
-  URL : /user/communities
+  URL : /communitiesDetail
 */
 router.route('/')
 .get((req, res) => {
-  if (permission.isAllowed(req.user.permission, 'Communities:own:read'))
-    community.getAllDetail(req.user.uid).then(result => { return http.success(req, res, result) })
-  else
-    return http.permissionDenied(req, res);
+  if (req.query.all === 'true') {
+    if (permission.isAllowed(req.user.permission, 'Communities:other:read'))
+      community.getAllMemberDetail().then(result => { return http.success(req, res, result) })
+    else
+      return http.permissionDenied(req, res);
+  }
+  else {
+    if (permission.isAllowed(req.user.permission, 'Communities:own:read'))
+      community.getOwnMemberDetail(req.user.uid).then(result => { return http.success(req, res, result) })
+    else
+      return http.permissionDenied(req, res);
+  }
 })
 .all((req, res) => {return http.methodNotAllowed(req, res)});
 

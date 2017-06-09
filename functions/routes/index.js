@@ -56,9 +56,11 @@ router.use(householdRequisitions);
     GET     /communities/:communityId
     PUT     /communities/:communityId
     DELETE  /communities/:communityId
-    GET     /communities/:communityId/sn
     POST    /user/communitySn/verify
     GET     /user/communities
+    GET     /user/communities/:communityId
+    GET     /communitiesDetail
+    GET     /communitiesDetail/:communityId
 */
 router.use(communities);
 
@@ -66,6 +68,8 @@ router.use(communities);
     GET     /communities/:communityId/households
     GET     /communities/:communityId/households/:householdId
     DELETE  /communities/:communityId/households/:householdId
+    GET     /communities/:communityId/householdsDetail
+    GET     /communities/:communityId/householdsDetail/:householdId
 */
 router.use(households);
 

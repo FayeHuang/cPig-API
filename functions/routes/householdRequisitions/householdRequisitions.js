@@ -11,16 +11,12 @@ router.route('/')
 .post((req, res) => {
   if (!req.body.number || !req.body.floor)
     return http.badRequest(req, res, `'number' and 'floor' is required`);
-  
-  const data = {
-    number: req.body.number,
-    floor: req.body.floor,
-    createUser: req.user.uid,
-    community: req.communityId
-  };
     
   if (permission.isAllowed(req.user.permission, 'HouseholdRequisitions:create'))
-    householdRequisition.create(data).then(result => { return http.success(req, res, result) });
+    householdRequisition.create(req.communityId, req.body.number, req.body.floor, req.user.uid)
+    .then(result => { 
+      return http.success(req, res, result) 
+    });
   else
     return http.permissionDenied(req, res);
 })
