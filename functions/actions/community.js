@@ -81,7 +81,7 @@ const isOwner = (id, ownerId) => {
 const getRolePermission = (id, role) => {
   return db.ref(`CommunityPermissions/${id}/${role}`).once('value').then(snapshot => {
     if (snapshot.val())
-      return snapshot.val()
+      return snapshot.val();
     else
       return {};
   })

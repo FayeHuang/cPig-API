@@ -1,6 +1,5 @@
 const admin = require('firebase-admin');
 const db = admin.database();
-const community = require("./community");
 const user = require("./user");
 
 const _addMember = (communityId, householdId, role, uid) => {
@@ -10,8 +9,8 @@ const _addMember = (communityId, householdId, role, uid) => {
   updates[`/HouseholdMembers/${householdId}/${role}/${uid}`] = true;
   updates[`/UserRoles/${uid}/households/${communityId}/${householdId}/${role}`] = true;
   
-  return community.getRolePermission(communityId, role).then(result => {
-    updates[`/HouseholdPermissions/${householdId}/${uid}`] = result;
+  return db.ref(`CommunityPermissions/${communityId}/${role}`).once('value').then(snapshot => {
+    updates[`/HouseholdPermissions/${householdId}/${uid}`] =  snapshot.val();
     return db.ref().update(updates);
   })
 }
