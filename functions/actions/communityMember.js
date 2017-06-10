@@ -6,7 +6,9 @@ const _addMember = (communityId, role, uid) => {
   var updates = {};
   updates[`/CommunityMembers/${communityId}/${role}/${uid}`] = true;
   updates[`/UserRoles/${uid}/communities/${communityId}/${role}`] = true;
-  return db.ref().update(updates);
+  return db.ref().update(updates).then(() => {
+    return true;
+  });
 }
 
 const getOne = (userId) => {
@@ -46,7 +48,9 @@ const isExist = (communityId, role, userId) => {
 
 const remove = (communityId, role, userId) => {
   return db.ref(`CommunityMembers/${communityId}/${role}/${userId}`).remove().then(() => {
-    return db.ref(`UserRoles/${userId}/communities/${communityId}/${role}`).remove()
+    return db.ref(`UserRoles/${userId}/communities/${communityId}/${role}`).remove().then(() => {
+      return true;
+    })
   })
 }
 

@@ -11,7 +11,9 @@ const _addMember = (communityId, householdId, role, uid) => {
   
   return db.ref(`CommunityPermissions/${communityId}/${role}`).once('value').then(snapshot => {
     updates[`/HouseholdPermissions/${householdId}/${uid}`] =  snapshot.val();
-    return db.ref().update(updates);
+    return db.ref().update(updates).then(() => {
+      return true;
+    });
   })
 }
 

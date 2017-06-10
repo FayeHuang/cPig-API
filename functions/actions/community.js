@@ -94,7 +94,7 @@ const getRoleDetail = (uid, communityId) => {
     var result = {};
     if (snapshot.val()) {
       var process = [];
-      result.roles = Object.keys(snapshot.val())
+      result.roles = Object.keys(snapshot.val()).filter(role => role !== 'RESIDENT_ADMIN' && role !== 'RESIDENT');
       process.push( getOne(communityId) );
       process.push( household.getRoleDetailInCommunity(uid, communityId) );
       

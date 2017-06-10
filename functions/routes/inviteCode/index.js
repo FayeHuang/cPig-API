@@ -46,31 +46,48 @@ module.exports = router;
  *
  * @apiSuccess {Boolean}  success                               API 執行成功與否
  * @apiSuccess {Object}   message                               執行結果
+ * @apiSuccess {Object}   message.id                            ID
  * @apiSuccess {String}   message.code                          invite code (6 位數字+大小寫字母隨機產生)
  * @apiSuccess {String}   message.role                          邀請加入的角色. ex:COMMUNITY_ADMIN
  * @apiSuccess {Object}   message.createTime                    invite code 建立時間 (time since the Unix epoch, in milliseconds)
  * @apiSuccess {String}   message.expiredTime                   invite code 過期時間, 建立時間 10 分鐘後 (time since the Unix epoch, in milliseconds)
  * @apiSuccess {Object}   message.community                     邀請加入的社區資料
- * @apiSuccess {Object}   message.community.communityId         社區 ID 
- * @apiSuccess {String}   message.community.communityId.name    社區名稱
- * @apiSuccess {String}   message.community.communityId.address 社區地址
- * 
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
   "message": {
+    "id": "GUARDHOeBzcVmwyPTL3Kdl6abfQwIbx82hQcpuyY6H0envkI4",
+    "code": "HLvomd",
     "community": {
-      "0gFNpjr7SflMxw7Y": {
-        "address": "community 624 address",
-        "name": "community 624"
-      }
+      "id": "hQcpuyY6H0envkI4",
+      "address": "松勤路",
+      "createTime": 1497020996855,
+      "createUser": {
+        "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+        "email": "yongling225@gmail.com",
+        "name": "John",
+        "photo": ""
+      },
+      "name": "宜誠天匯",
+      "photo": "",
+      "sn": "009490"
     },
-    "role": "COMMUNITY_ADMIN",
-    "code": "ojVSuk",
-    "createTime": 1494512489270,
-    "expiredTime": 1494513089270
+    "createTime": 1497099071147,
+    "expiredTime": 1497099671147,
+    "role": "GUARD"
   }
 }
  *
@@ -89,31 +106,48 @@ module.exports = router;
  *
  * @apiSuccess {Boolean}  success                               API 執行成功與否
  * @apiSuccess {Object}   message                               執行結果
+ * @apiSuccess {Object}   message.id                            ID
  * @apiSuccess {String}   message.code                          invite code (6 位數字+大小寫字母隨機產生)
  * @apiSuccess {String}   message.role                          邀請加入的角色. ex:COMMUNITY_ADMIN
  * @apiSuccess {Object}   message.createTime                    invite code 建立時間 (time since the Unix epoch, in milliseconds)
  * @apiSuccess {String}   message.expiredTime                   invite code 過期時間, 建立時間 10 分鐘後 (time since the Unix epoch, in milliseconds)
  * @apiSuccess {Object}   message.community                     邀請加入的社區資料
- * @apiSuccess {Object}   message.community.communityId         社區 ID 
- * @apiSuccess {String}   message.community.communityId.name    社區名稱
- * @apiSuccess {String}   message.community.communityId.address 社區地址
- * 
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
   "message": {
+    "id": "GUARDHOeBzcVmwyPTL3Kdl6abfQwIbx82hQcpuyY6H0envkI4",
+    "code": "HLvomd",
     "community": {
-      "0gFNpjr7SflMxw7Y": {
-        "address": "community 624 address",
-        "name": "community 624"
-      }
+      "id": "hQcpuyY6H0envkI4",
+      "address": "松勤路",
+      "createTime": 1497020996855,
+      "createUser": {
+        "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+        "email": "yongling225@gmail.com",
+        "name": "John",
+        "photo": ""
+      },
+      "name": "宜誠天匯",
+      "photo": "",
+      "sn": "009490"
     },
-    "role": "COMMUNITY_ADMIN",
-    "code": "ojVSuk",
-    "createTime": 1494512489270,
-    "expiredTime": 1494513089270
+    "createTime": 1497099071147,
+    "expiredTime": 1497099671147,
+    "role": "GUARD"
   }
 }
  *
@@ -132,31 +166,48 @@ module.exports = router;
  *
  * @apiSuccess {Boolean}  success                               API 執行成功與否
  * @apiSuccess {Object}   message                               執行結果
+ * @apiSuccess {Object}   message.id                            ID
  * @apiSuccess {String}   message.code                          invite code (6 位數字+大小寫字母隨機產生)
  * @apiSuccess {String}   message.role                          邀請加入的角色. ex:COMMUNITY_ADMIN
  * @apiSuccess {Object}   message.createTime                    invite code 建立時間 (time since the Unix epoch, in milliseconds)
  * @apiSuccess {String}   message.expiredTime                   invite code 過期時間, 建立時間 10 分鐘後 (time since the Unix epoch, in milliseconds)
  * @apiSuccess {Object}   message.community                     邀請加入的社區資料
- * @apiSuccess {Object}   message.community.communityId         社區 ID 
- * @apiSuccess {String}   message.community.communityId.name    社區名稱
- * @apiSuccess {String}   message.community.communityId.address 社區地址
- * 
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
   "message": {
+    "id": "GUARDHOeBzcVmwyPTL3Kdl6abfQwIbx82hQcpuyY6H0envkI4",
+    "code": "HLvomd",
     "community": {
-      "0gFNpjr7SflMxw7Y": {
-        "address": "community 624 address",
-        "name": "community 624"
-      }
+      "id": "hQcpuyY6H0envkI4",
+      "address": "松勤路",
+      "createTime": 1497020996855,
+      "createUser": {
+        "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+        "email": "yongling225@gmail.com",
+        "name": "John",
+        "photo": ""
+      },
+      "name": "宜誠天匯",
+      "photo": "",
+      "sn": "009490"
     },
-    "role": "COMMUNITY_ADMIN",
-    "code": "ojVSuk",
-    "createTime": 1494512489270,
-    "expiredTime": 1494513089270
+    "createTime": 1497099071147,
+    "expiredTime": 1497099671147,
+    "role": "GUARD"
   }
 }
  *
@@ -202,13 +253,27 @@ module.exports = router;
  * @apiSuccess {Object}   message.createTime                    invite code 建立時間 (time since the Unix epoch, in milliseconds)
  * @apiSuccess {String}   message.expiredTime                   invite code 過期時間, 建立時間 10 分鐘後 (time since the Unix epoch, in milliseconds)
  * @apiSuccess {Object}   message.community                     邀請加入的社區資料
- * @apiSuccess {Object}   message.community.communityId         社區 ID 
- * @apiSuccess {String}   message.community.communityId.name    社區名稱
- * @apiSuccess {String}   message.community.communityId.address 社區地址
- * @apiSuccess {Object}   message.householder                   邀請加入的住戶資料
- * @apiSuccess {Object}   message.householder.householderId         住戶 ID 
- * @apiSuccess {String}   message.householder.householderId.number  住戶門牌號碼
- * @apiSuccess {String}   message.householder.householderId.floor   住戶樓層
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
+ * @apiSuccess {Object}   message.householder               邀請加入的住戶資料
+ * @apiSuccess {String}   message.householder.id        住戶 ID
+ * @apiSuccess {String}   message.householder.floor   住戶樓層
+ * @apiSuccess {String}   message.householder.number  住戶門牌號碼
+ * @apiSuccess {String}   message.householder.createTime  住戶建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.householder.createUser 住戶建立人
+ * @apiSuccess {String}   message.householder.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.householder.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.householder.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.householder.createUser.photo  建立人大頭貼
  * 
  * 
  * @apiSuccessExample Success-Response:
@@ -216,22 +281,37 @@ module.exports = router;
 {
   "success": true,
   "message": {
+    "id": "RESIDENTHOeBzcVmwyPTL3Kdl6abfQwIbx82i54xyZvdBg1aPQCg",
+    "code": "3O0CIR",
     "community": {
-      "0gFNpjr7SflMxw7Y": {
-        "address": "community 624 address",
-        "name": "community 624"
-      }
+      "id": "hQcpuyY6H0envkI4",
+      "address": "松勤路",
+      "createTime": 1497020996855,
+      "createUser": {
+        "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+        "email": "yongling225@gmail.com",
+        "name": "John",
+        "photo": ""
+      },
+      "name": "宜誠天匯",
+      "photo": "",
+      "sn": "009490"
     },
-    "role": "RESIDENT_ADMIN",
-    "code": "ZxdTyQ",
-    "createTime": 1494513096923,
-    "expiredTime": 1494513696923,
+    "createTime": 1497099568814,
+    "expiredTime": 1497100168814,
     "household": {
-      "6XimnblO5LFRSqIJ": {
-        "floor": "323",
-        "number": "323"
-      }
-    }
+      "id": "i54xyZvdBg1aPQCg",
+      "createTime": 1497095978390,
+      "createUser": {
+        "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
+        "email": "user1@cpig.com",
+        "name": "user1",
+        "photo": ""
+      },
+      "floor": "174",
+      "number": "174"
+    },
+    "role": "RESIDENT"
   }
 }
  *
@@ -256,13 +336,27 @@ module.exports = router;
  * @apiSuccess {Object}   message.createTime                    invite code 建立時間 (time since the Unix epoch, in milliseconds)
  * @apiSuccess {String}   message.expiredTime                   invite code 過期時間, 建立時間 10 分鐘後 (time since the Unix epoch, in milliseconds)
  * @apiSuccess {Object}   message.community                     邀請加入的社區資料
- * @apiSuccess {Object}   message.community.communityId         社區 ID 
- * @apiSuccess {String}   message.community.communityId.name    社區名稱
- * @apiSuccess {String}   message.community.communityId.address 社區地址
- * @apiSuccess {Object}   message.householder                   邀請加入的住戶資料
- * @apiSuccess {Object}   message.householder.householderId         住戶 ID 
- * @apiSuccess {String}   message.householder.householderId.number  住戶門牌號碼
- * @apiSuccess {String}   message.householder.householderId.floor   住戶樓層
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
+ * @apiSuccess {Object}   message.householder               邀請加入的住戶資料
+ * @apiSuccess {String}   message.householder.id        住戶 ID
+ * @apiSuccess {String}   message.householder.floor   住戶樓層
+ * @apiSuccess {String}   message.householder.number  住戶門牌號碼
+ * @apiSuccess {String}   message.householder.createTime  住戶建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.householder.createUser 住戶建立人
+ * @apiSuccess {String}   message.householder.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.householder.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.householder.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.householder.createUser.photo  建立人大頭貼
  * 
  * 
  * @apiSuccessExample Success-Response:
@@ -270,22 +364,37 @@ module.exports = router;
 {
   "success": true,
   "message": {
+    "id": "RESIDENTHOeBzcVmwyPTL3Kdl6abfQwIbx82i54xyZvdBg1aPQCg",
+    "code": "3O0CIR",
     "community": {
-      "0gFNpjr7SflMxw7Y": {
-        "address": "community 624 address",
-        "name": "community 624"
-      }
+      "id": "hQcpuyY6H0envkI4",
+      "address": "松勤路",
+      "createTime": 1497020996855,
+      "createUser": {
+        "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+        "email": "yongling225@gmail.com",
+        "name": "John",
+        "photo": ""
+      },
+      "name": "宜誠天匯",
+      "photo": "",
+      "sn": "009490"
     },
-    "role": "RESIDENT_ADMIN",
-    "code": "ZxdTyQ",
-    "createTime": 1494513096923,
-    "expiredTime": 1494513696923,
+    "createTime": 1497099568814,
+    "expiredTime": 1497100168814,
     "household": {
-      "6XimnblO5LFRSqIJ": {
-        "floor": "323",
-        "number": "323"
-      }
-    }
+      "id": "i54xyZvdBg1aPQCg",
+      "createTime": 1497095978390,
+      "createUser": {
+        "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
+        "email": "user1@cpig.com",
+        "name": "user1",
+        "photo": ""
+      },
+      "floor": "174",
+      "number": "174"
+    },
+    "role": "RESIDENT"
   }
 }
  *
@@ -310,13 +419,27 @@ module.exports = router;
  * @apiSuccess {Object}   message.createTime                    invite code 建立時間 (time since the Unix epoch, in milliseconds)
  * @apiSuccess {String}   message.expiredTime                   invite code 過期時間, 建立時間 10 分鐘後 (time since the Unix epoch, in milliseconds)
  * @apiSuccess {Object}   message.community                     邀請加入的社區資料
- * @apiSuccess {Object}   message.community.communityId         社區 ID 
- * @apiSuccess {String}   message.community.communityId.name    社區名稱
- * @apiSuccess {String}   message.community.communityId.address 社區地址
- * @apiSuccess {Object}   message.householder                   邀請加入的住戶資料
- * @apiSuccess {Object}   message.householder.householderId         住戶 ID 
- * @apiSuccess {String}   message.householder.householderId.number  住戶門牌號碼
- * @apiSuccess {String}   message.householder.householderId.floor   住戶樓層
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
+ * @apiSuccess {Object}   message.householder               邀請加入的住戶資料
+ * @apiSuccess {String}   message.householder.id        住戶 ID
+ * @apiSuccess {String}   message.householder.floor   住戶樓層
+ * @apiSuccess {String}   message.householder.number  住戶門牌號碼
+ * @apiSuccess {String}   message.householder.createTime  住戶建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.householder.createUser 住戶建立人
+ * @apiSuccess {String}   message.householder.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.householder.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.householder.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.householder.createUser.photo  建立人大頭貼
  * 
  * 
  * @apiSuccessExample Success-Response:
@@ -324,22 +447,37 @@ module.exports = router;
 {
   "success": true,
   "message": {
+    "id": "RESIDENTHOeBzcVmwyPTL3Kdl6abfQwIbx82i54xyZvdBg1aPQCg",
+    "code": "3O0CIR",
     "community": {
-      "0gFNpjr7SflMxw7Y": {
-        "address": "community 624 address",
-        "name": "community 624"
-      }
+      "id": "hQcpuyY6H0envkI4",
+      "address": "松勤路",
+      "createTime": 1497020996855,
+      "createUser": {
+        "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+        "email": "yongling225@gmail.com",
+        "name": "John",
+        "photo": ""
+      },
+      "name": "宜誠天匯",
+      "photo": "",
+      "sn": "009490"
     },
-    "role": "RESIDENT_ADMIN",
-    "code": "ZxdTyQ",
-    "createTime": 1494513096923,
-    "expiredTime": 1494513696923,
+    "createTime": 1497099568814,
+    "expiredTime": 1497100168814,
     "household": {
-      "6XimnblO5LFRSqIJ": {
-        "floor": "323",
-        "number": "323"
-      }
-    }
+      "id": "i54xyZvdBg1aPQCg",
+      "createTime": 1497095978390,
+      "createUser": {
+        "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
+        "email": "user1@cpig.com",
+        "name": "user1",
+        "photo": ""
+      },
+      "floor": "174",
+      "number": "174"
+    },
+    "role": "RESIDENT"
   }
 }
  *

@@ -22,23 +22,24 @@ module.exports = router;
  * @apiParam (Query string) {Boolean} [all] if true, 取得所有成員資料. if false, 取得自己的資料.
  *
  * @apiSuccess {Boolean}  success              API 執行成功與否
- * @apiSuccess {Object}   message              執行結果
- * @apiSuccess {Object}   message.userId       成員 ID
- * @apiSuccess {String}   message.userId.email 成員 email
- * @apiSuccess {String}   message.userId.name  成員名稱
- * @apiSuccess {String}   message.userId.photo 成員大頭貼 URL
+ * @apiSuccess {Object[]}   message              執行結果
+ * @apiSuccess {String}   message.id       成員 ID
+ * @apiSuccess {String}   message.email 成員 email
+ * @apiSuccess {String}   message.name  成員名稱
+ * @apiSuccess {String}   message.photo 成員大頭貼 URL
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
-  "message": {
-    "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
+  "message": [
+    {
+      "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
       "email": "root@cpig.com",
       "name": "system_admin",
       "photo": ""
     }
-  }
+  ]
 }
  *
  * @apiUse Header
@@ -58,21 +59,20 @@ module.exports = router;
  * 
  * @apiSuccess {Boolean}  success              API 執行成功與否
  * @apiSuccess {Object}   message              執行結果
- * @apiSuccess {Object}   message.userId       成員 ID
- * @apiSuccess {String}   message.userId.email 成員 email
- * @apiSuccess {String}   message.userId.name  成員名稱
- * @apiSuccess {String}   message.userId.photo 成員大頭貼 URL
+ * @apiSuccess {String}   message.id       成員 ID
+ * @apiSuccess {String}   message.email 成員 email
+ * @apiSuccess {String}   message.name  成員名稱
+ * @apiSuccess {String}   message.photo 成員大頭貼 URL
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
   "message": {
-    "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
-      "email": "root@cpig.com",
-      "name": "system_admin",
-      "photo": ""
-    }
+    "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+    "email": "root@cpig.com",
+    "name": "system_admin",
+    "photo": ""
   }
 }
  *

@@ -31,63 +31,80 @@ module.exports = router;
  * @apiParam (Query string) {Boolean} [all] if true, 取得所有邀請單資料. if false, 取得自己的邀請單資料.
  *
  * @apiSuccess {Boolean}  success                             API 執行成功與否
- * @apiSuccess {Object}   message                             執行結果
- * @apiSuccess {String}   message.invitationId                邀請單 ID
- * @apiSuccess {String}   message.invitationId.role           邀請加入的角色. ex:COMMUNITY_ADMIN
- * @apiSuccess {Object}   message.invitationId.inviteUser     邀請人資料
- * @apiSuccess {String}   message.invitationId.inviteUser.userId       邀請人 ID
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.email 邀請人 email
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.name  邀請人名稱
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.photo 邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.beInvitedUser     被邀請人資料
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId       被邀請人 ID
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.email 被邀請人 email
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.name  被邀請人名稱
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.photo 被邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.community               邀請加入的社區資料
- * @apiSuccess {String}   message.invitationId.community.communityId   社區 ID 
- * @apiSuccess {String}   message.invitationId.community.communityId.name 社區名稱
- * @apiSuccess {String}   message.invitationId.community.communityId.address 社區地址
- * @apiSuccess {Object}   [message.invitationId.householder]               邀請加入的住戶資料
- * @apiSuccess {String}   [message.invitationId.householder.householderId]   住戶 ID 
- * @apiSuccess {String}   [message.invitationId.householder.householderId.number] 住戶門牌號碼
- * @apiSuccess {String}   [message.invitationId.householder.householderId.floor]  住戶樓層
+ * @apiSuccess {Object[]}   message                             執行結果
+ * @apiSuccess {String}   message.id                邀請單 ID
+ * @apiSuccess {String}   message.role           邀請加入的角色. ex:COMMUNITY_ADMIN
+ * @apiSuccess {String}   message.createTime  邀請單建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.inviteUser     邀請人資料
+ * @apiSuccess {String}   message.inviteUser.id       邀請人 ID
+ * @apiSuccess {String}   message.inviteUser.email 邀請人 email
+ * @apiSuccess {String}   message.inviteUser.name  邀請人名稱
+ * @apiSuccess {String}   message.inviteUser.photo 邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.beInvitedUser     被邀請人資料
+ * @apiSuccess {String}   message.beInvitedUser.id       被邀請人 ID
+ * @apiSuccess {String}   message.beInvitedUser.email 被邀請人 email
+ * @apiSuccess {String}   message.beInvitedUser.name  被邀請人名稱
+ * @apiSuccess {String}   message.beInvitedUser.photo 被邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.community               邀請加入的社區資料
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
+ * @apiSuccess {Object}   [message.householder]               邀請加入的住戶資料
+ * @apiSuccess {String}   [message.householder.id]        住戶 ID
+ * @apiSuccess {String}   [message.householder.floor]   住戶樓層
+ * @apiSuccess {String}   [message.householder.number]  住戶門牌號碼
+ * @apiSuccess {String}   [message.householder.createTime]  住戶建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   [message.householder.createUser] 住戶建立人
+ * @apiSuccess {String}   [message.householder.createUser.id]  建立人 ID
+ * @apiSuccess {String}   [message.householder.createUser.email]  建立人 Email
+ * @apiSuccess {String}   [message.householder.createUser.name]  建立人暱稱
+ * @apiSuccess {String}   [message.householder.createUser.photo]  建立人大頭貼
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
-  "message": {
-    "lU6Flo5tMUKXAHlQ": {
+  "message": [
+    {
+      "id": "H7ieirlurU4ewsl5",
+      "createTime": 1497098398557,
       "beInvitedUser": {
-        "6guc1Vmi9KfMJ5SgHkMs7sm6hE32": {
-          "email": "user1@cpig.com",
-          "name": "user1",
-          "photo": ""
-        }
-      },
-      "role": "RESIDENT_ADMIN",
-      "inviteUser": {
-        "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
-          "email": "root@cpig.com",
-          "name": "system_admin",
-          "photo": ""
-        }
+        "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
+        "email": "user1@cpig.com",
+        "name": "user1",
+        "photo": ""
       },
       "community": {
-        "0gFNpjr7SflMxw7Y": {
-          "address": "community 624 address",
-          "name": "community 624"
-        }
+        "id": "hQcpuyY6H0envkI4",
+        "address": "松勤路",
+        "createTime": 1497020996855,
+        "createUser": {
+          "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+          "email": "yongling225@gmail.com",
+          "name": "John",
+          "photo": ""
+        },
+        "name": "宜誠天匯",
+        "photo": "",
+        "sn": "009490"
       },
-      "household": {
-        "6XimnblO5LFRSqIJ": {
-          "floor": "323",
-          "number": "323"
-        }
-      }
+      "inviteUser": {
+        "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+        "email": "root@cpig.com",
+        "name": "system_admin",
+        "photo": ""
+      },
+      "role": "GUARD"
     }
-  }
+  ]
 }
  *
  * @apiUse Header
@@ -104,61 +121,76 @@ module.exports = router;
  *
  * @apiSuccess {Boolean}  success                             API 執行成功與否
  * @apiSuccess {Object}   message                             執行結果
- * @apiSuccess {String}   message.invitationId                邀請單 ID
- * @apiSuccess {String}   message.invitationId.role           邀請加入的角色. ex:COMMUNITY_ADMIN
- * @apiSuccess {Object}   message.invitationId.inviteUser     邀請人資料
- * @apiSuccess {String}   message.invitationId.inviteUser.userId       邀請人 ID
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.email 邀請人 email
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.name  邀請人名稱
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.photo 邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.beInvitedUser     被邀請人資料
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId       被邀請人 ID
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.email 被邀請人 email
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.name  被邀請人名稱
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.photo 被邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.community               邀請加入的社區資料
- * @apiSuccess {String}   message.invitationId.community.communityId   社區 ID 
- * @apiSuccess {String}   message.invitationId.community.communityId.name 社區名稱
- * @apiSuccess {String}   message.invitationId.community.communityId.address 社區地址
- * @apiSuccess {Object}   [message.invitationId.householder]               邀請加入的住戶資料
- * @apiSuccess {String}   [message.invitationId.householder.householderId]   住戶 ID 
- * @apiSuccess {String}   [message.invitationId.householder.householderId.number] 住戶門牌號碼
- * @apiSuccess {String}   [message.invitationId.householder.householderId.floor]  住戶樓層
+ * @apiSuccess {String}   message.id                邀請單 ID
+ * @apiSuccess {String}   message.role           邀請加入的角色. ex:COMMUNITY_ADMIN
+ * @apiSuccess {String}   message.createTime  邀請單建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.inviteUser     邀請人資料
+ * @apiSuccess {String}   message.inviteUser.id       邀請人 ID
+ * @apiSuccess {String}   message.inviteUser.email 邀請人 email
+ * @apiSuccess {String}   message.inviteUser.name  邀請人名稱
+ * @apiSuccess {String}   message.inviteUser.photo 邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.beInvitedUser     被邀請人資料
+ * @apiSuccess {String}   message.beInvitedUser.id       被邀請人 ID
+ * @apiSuccess {String}   message.beInvitedUser.email 被邀請人 email
+ * @apiSuccess {String}   message.beInvitedUser.name  被邀請人名稱
+ * @apiSuccess {String}   message.beInvitedUser.photo 被邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.community               邀請加入的社區資料
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
+ * @apiSuccess {Object}   [message.householder]               邀請加入的住戶資料
+ * @apiSuccess {String}   [message.householder.id]        住戶 ID
+ * @apiSuccess {String}   [message.householder.floor]   住戶樓層
+ * @apiSuccess {String}   [message.householder.number]  住戶門牌號碼
+ * @apiSuccess {String}   [message.householder.createTime]  住戶建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   [message.householder.createUser] 住戶建立人
+ * @apiSuccess {String}   [message.householder.createUser.id]  建立人 ID
+ * @apiSuccess {String}   [message.householder.createUser.email]  建立人 Email
+ * @apiSuccess {String}   [message.householder.createUser.name]  建立人暱稱
+ * @apiSuccess {String}   [message.householder.createUser.photo]  建立人大頭貼
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
   "message": {
-    "lU6Flo5tMUKXAHlQ": {
-      "beInvitedUser": {
-        "6guc1Vmi9KfMJ5SgHkMs7sm6hE32": {
-          "email": "user1@cpig.com",
-          "name": "user1",
-          "photo": ""
-        }
+    "id": "H7ieirlurU4ewsl5",
+    "createTime": 1497098398557,
+    "beInvitedUser": {
+      "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
+      "email": "user1@cpig.com",
+      "name": "user1",
+      "photo": ""
+    },
+    "community": {
+      "id": "hQcpuyY6H0envkI4",
+      "address": "松勤路",
+      "createTime": 1497020996855,
+      "createUser": {
+        "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+        "email": "yongling225@gmail.com",
+        "name": "John",
+        "photo": ""
       },
-      "role": "RESIDENT_ADMIN",
-      "inviteUser": {
-        "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
-          "email": "root@cpig.com",
-          "name": "system_admin",
-          "photo": ""
-        }
-      },
-      "community": {
-        "0gFNpjr7SflMxw7Y": {
-          "address": "community 624 address",
-          "name": "community 624"
-        }
-      },
-      "household": {
-        "6XimnblO5LFRSqIJ": {
-          "floor": "323",
-          "number": "323"
-        }
-      }
-    }
+      "name": "宜誠天匯",
+      "photo": "",
+      "sn": "009490"
+    },
+    "inviteUser": {
+      "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+      "email": "root@cpig.com",
+      "name": "system_admin",
+      "photo": ""
+    },
+    "role": "GUARD"
   }
 }
  *
@@ -218,54 +250,70 @@ module.exports = router;
  * @apiParam {String} role 角色 (ex: COMMUNITY_ADMIN)
  *
  * @apiSuccess {Boolean}  success                             API 執行成功與否
- * @apiSuccess {Object}   message                             執行結果
- * @apiSuccess {String}   message.invitationId                邀請單 ID
- * @apiSuccess {String}   message.invitationId.role           邀請加入的角色. ex:COMMUNITY_ADMIN
- * @apiSuccess {Object}   message.invitationId.inviteUser     邀請人資料
- * @apiSuccess {String}   message.invitationId.inviteUser.userId       邀請人 ID
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.email 邀請人 email
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.name  邀請人名稱
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.photo 邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.beInvitedUser     被邀請人資料
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId       被邀請人 ID
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.email 被邀請人 email
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.name  被邀請人名稱
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.photo 被邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.community               邀請加入的社區資料
- * @apiSuccess {String}   message.invitationId.community.communityId   社區 ID 
- * @apiSuccess {String}   message.invitationId.community.communityId.name 社區名稱
- * @apiSuccess {String}   message.invitationId.community.communityId.address 社區地址
- 
+ * @apiSuccess {Object[]}   message                             執行結果
+ * @apiSuccess {String}   message.id                邀請單 ID
+ * @apiSuccess {String}   message.role           邀請加入的角色. ex:COMMUNITY_ADMIN
+ * @apiSuccess {String}   message.createTime  邀請單建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.inviteUser     邀請人資料
+ * @apiSuccess {String}   message.inviteUser.id       邀請人 ID
+ * @apiSuccess {String}   message.inviteUser.email 邀請人 email
+ * @apiSuccess {String}   message.inviteUser.name  邀請人名稱
+ * @apiSuccess {String}   message.inviteUser.photo 邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.beInvitedUser     被邀請人資料
+ * @apiSuccess {String}   message.beInvitedUser.id       被邀請人 ID
+ * @apiSuccess {String}   message.beInvitedUser.email 被邀請人 email
+ * @apiSuccess {String}   message.beInvitedUser.name  被邀請人名稱
+ * @apiSuccess {String}   message.beInvitedUser.photo 被邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.community               邀請加入的社區資料
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
-  "message": {
-    "lU6Flo5tMUKXAHlQ": {
+  "message": [
+    {
+      "id": "H7ieirlurU4ewsl5",
+      "createTime": 1497098398557,
       "beInvitedUser": {
-        "6guc1Vmi9KfMJ5SgHkMs7sm6hE32": {
-          "email": "user1@cpig.com",
-          "name": "user1",
-          "photo": ""
-        }
-      },
-      "role": "COMMUNITY_ADMIN",
-      "inviteUser": {
-        "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
-          "email": "root@cpig.com",
-          "name": "system_admin",
-          "photo": ""
-        }
+        "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
+        "email": "user1@cpig.com",
+        "name": "user1",
+        "photo": ""
       },
       "community": {
-        "0gFNpjr7SflMxw7Y": {
-          "address": "community 624 address",
-          "name": "community 624"
-        }
-      }
+        "id": "hQcpuyY6H0envkI4",
+        "address": "松勤路",
+        "createTime": 1497020996855,
+        "createUser": {
+          "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+          "email": "yongling225@gmail.com",
+          "name": "John",
+          "photo": ""
+        },
+        "name": "宜誠天匯",
+        "photo": "",
+        "sn": "009490"
+      },
+      "inviteUser": {
+        "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+        "email": "root@cpig.com",
+        "name": "system_admin",
+        "photo": ""
+      },
+      "role": "GUARD"
     }
-  }
+  ]
 }
  *
  * @apiUse Header
@@ -289,52 +337,66 @@ module.exports = router;
  *
  * @apiSuccess {Boolean}  success                             API 執行成功與否
  * @apiSuccess {Object}   message                             執行結果
- * @apiSuccess {String}   message.invitationId                邀請單 ID
- * @apiSuccess {String}   message.invitationId.role           邀請加入的角色. ex:COMMUNITY_ADMIN
- * @apiSuccess {Object}   message.invitationId.inviteUser     邀請人資料
- * @apiSuccess {String}   message.invitationId.inviteUser.userId       邀請人 ID
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.email 邀請人 email
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.name  邀請人名稱
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.photo 邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.beInvitedUser     被邀請人資料
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId       被邀請人 ID
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.email 被邀請人 email
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.name  被邀請人名稱
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.photo 被邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.community               邀請加入的社區資料
- * @apiSuccess {String}   message.invitationId.community.communityId   社區 ID 
- * @apiSuccess {String}   message.invitationId.community.communityId.name 社區名稱
- * @apiSuccess {String}   message.invitationId.community.communityId.address 社區地址
- 
+ * @apiSuccess {String}   message.id                邀請單 ID
+ * @apiSuccess {String}   message.role           邀請加入的角色. ex:COMMUNITY_ADMIN
+ * @apiSuccess {String}   message.createTime  邀請單建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.inviteUser     邀請人資料
+ * @apiSuccess {String}   message.inviteUser.id       邀請人 ID
+ * @apiSuccess {String}   message.inviteUser.email 邀請人 email
+ * @apiSuccess {String}   message.inviteUser.name  邀請人名稱
+ * @apiSuccess {String}   message.inviteUser.photo 邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.beInvitedUser     被邀請人資料
+ * @apiSuccess {String}   message.beInvitedUser.id       被邀請人 ID
+ * @apiSuccess {String}   message.beInvitedUser.email 被邀請人 email
+ * @apiSuccess {String}   message.beInvitedUser.name  被邀請人名稱
+ * @apiSuccess {String}   message.beInvitedUser.photo 被邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.community               邀請加入的社區資料
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
   "message": {
-    "lU6Flo5tMUKXAHlQ": {
-      "beInvitedUser": {
-        "6guc1Vmi9KfMJ5SgHkMs7sm6hE32": {
-          "email": "user1@cpig.com",
-          "name": "user1",
-          "photo": ""
-        }
+    "id": "H7ieirlurU4ewsl5",
+    "createTime": 1497098398557,
+    "beInvitedUser": {
+      "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
+      "email": "user1@cpig.com",
+      "name": "user1",
+      "photo": ""
+    },
+    "community": {
+      "id": "hQcpuyY6H0envkI4",
+      "address": "松勤路",
+      "createTime": 1497020996855,
+      "createUser": {
+        "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+        "email": "yongling225@gmail.com",
+        "name": "John",
+        "photo": ""
       },
-      "role": "COMMUNITY_ADMIN",
-      "inviteUser": {
-        "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
-          "email": "root@cpig.com",
-          "name": "system_admin",
-          "photo": ""
-        }
-      },
-      "community": {
-        "0gFNpjr7SflMxw7Y": {
-          "address": "community 624 address",
-          "name": "community 624"
-        }
-      }
-    }
+      "name": "宜誠天匯",
+      "photo": "",
+      "sn": "009490"
+    },
+    "inviteUser": {
+      "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+      "email": "root@cpig.com",
+      "name": "system_admin",
+      "photo": ""
+    },
+    "role": "GUARD"
   }
 }
  *
@@ -354,52 +416,66 @@ module.exports = router;
  *
  * @apiSuccess {Boolean}  success                             API 執行成功與否
  * @apiSuccess {Object}   message                             執行結果
- * @apiSuccess {String}   message.invitationId                邀請單 ID
- * @apiSuccess {String}   message.invitationId.role           邀請加入的角色. ex:COMMUNITY_ADMIN
- * @apiSuccess {Object}   message.invitationId.inviteUser     邀請人資料
- * @apiSuccess {String}   message.invitationId.inviteUser.userId       邀請人 ID
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.email 邀請人 email
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.name  邀請人名稱
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.photo 邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.beInvitedUser     被邀請人資料
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId       被邀請人 ID
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.email 被邀請人 email
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.name  被邀請人名稱
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.photo 被邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.community               邀請加入的社區資料
- * @apiSuccess {String}   message.invitationId.community.communityId   社區 ID 
- * @apiSuccess {String}   message.invitationId.community.communityId.name 社區名稱
- * @apiSuccess {String}   message.invitationId.community.communityId.address 社區地址
- 
+ * @apiSuccess {String}   message.id                邀請單 ID
+ * @apiSuccess {String}   message.role           邀請加入的角色. ex:COMMUNITY_ADMIN
+ * @apiSuccess {String}   message.createTime  邀請單建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.inviteUser     邀請人資料
+ * @apiSuccess {String}   message.inviteUser.id       邀請人 ID
+ * @apiSuccess {String}   message.inviteUser.email 邀請人 email
+ * @apiSuccess {String}   message.inviteUser.name  邀請人名稱
+ * @apiSuccess {String}   message.inviteUser.photo 邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.beInvitedUser     被邀請人資料
+ * @apiSuccess {String}   message.beInvitedUser.id       被邀請人 ID
+ * @apiSuccess {String}   message.beInvitedUser.email 被邀請人 email
+ * @apiSuccess {String}   message.beInvitedUser.name  被邀請人名稱
+ * @apiSuccess {String}   message.beInvitedUser.photo 被邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.community               邀請加入的社區資料
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
   "message": {
-    "lU6Flo5tMUKXAHlQ": {
-      "beInvitedUser": {
-        "6guc1Vmi9KfMJ5SgHkMs7sm6hE32": {
-          "email": "user1@cpig.com",
-          "name": "user1",
-          "photo": ""
-        }
+    "id": "H7ieirlurU4ewsl5",
+    "createTime": 1497098398557,
+    "beInvitedUser": {
+      "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
+      "email": "user1@cpig.com",
+      "name": "user1",
+      "photo": ""
+    },
+    "community": {
+      "id": "hQcpuyY6H0envkI4",
+      "address": "松勤路",
+      "createTime": 1497020996855,
+      "createUser": {
+        "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+        "email": "yongling225@gmail.com",
+        "name": "John",
+        "photo": ""
       },
-      "role": "COMMUNITY_ADMIN",
-      "inviteUser": {
-        "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
-          "email": "root@cpig.com",
-          "name": "system_admin",
-          "photo": ""
-        }
-      },
-      "community": {
-        "0gFNpjr7SflMxw7Y": {
-          "address": "community 624 address",
-          "name": "community 624"
-        }
-      }
-    }
+      "name": "宜誠天匯",
+      "photo": "",
+      "sn": "009490"
+    },
+    "inviteUser": {
+      "id": "HOeBzcVmwyPTL3Kdl6abfQwIbx82",
+      "email": "root@cpig.com",
+      "name": "system_admin",
+      "photo": ""
+    },
+    "role": "GUARD"
   }
 }
  *
@@ -442,64 +518,93 @@ module.exports = router;
  * @apiParam {String} role 角色 (ex: RESIDENT)
  *
  * @apiSuccess {Boolean}  success                             API 執行成功與否
- * @apiSuccess {Object}   message                             執行結果
- * @apiSuccess {String}   message.invitationId                邀請單 ID
- * @apiSuccess {String}   message.invitationId.role           邀請加入的角色. ex:COMMUNITY_ADMIN
- * @apiSuccess {Object}   message.invitationId.inviteUser     邀請人資料
- * @apiSuccess {String}   message.invitationId.inviteUser.userId       邀請人 ID
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.email 邀請人 email
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.name  邀請人名稱
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.photo 邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.beInvitedUser     被邀請人資料
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId       被邀請人 ID
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.email 被邀請人 email
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.name  被邀請人名稱
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.photo 被邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.community               邀請加入的社區資料
- * @apiSuccess {String}   message.invitationId.community.communityId   社區 ID 
- * @apiSuccess {String}   message.invitationId.community.communityId.name 社區名稱
- * @apiSuccess {String}   message.invitationId.community.communityId.address 社區地址
- * @apiSuccess {Object}   message.invitationId.householder               邀請加入的住戶資料
- * @apiSuccess {String}   message.invitationId.householder.householderId   住戶 ID 
- * @apiSuccess {String}   message.invitationId.householder.householderId.number 住戶門牌號碼
- * @apiSuccess {String}   message.invitationId.householder.householderId.floor  住戶樓層
+ * @apiSuccess {Object[]}   message                             執行結果
+ * @apiSuccess {String}   message.id                邀請單 ID
+ * @apiSuccess {String}   message.role           邀請加入的角色. ex:COMMUNITY_ADMIN
+ * @apiSuccess {String}   message.createTime  邀請單建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.inviteUser     邀請人資料
+ * @apiSuccess {String}   message.inviteUser.id       邀請人 ID
+ * @apiSuccess {String}   message.inviteUser.email 邀請人 email
+ * @apiSuccess {String}   message.inviteUser.name  邀請人名稱
+ * @apiSuccess {String}   message.inviteUser.photo 邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.beInvitedUser     被邀請人資料
+ * @apiSuccess {String}   message.beInvitedUser.id       被邀請人 ID
+ * @apiSuccess {String}   message.beInvitedUser.email 被邀請人 email
+ * @apiSuccess {String}   message.beInvitedUser.name  被邀請人名稱
+ * @apiSuccess {String}   message.beInvitedUser.photo 被邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.community               邀請加入的社區資料
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
+ * @apiSuccess {Object}   message.householder               邀請加入的住戶資料
+ * @apiSuccess {String}   message.householder.id        住戶 ID
+ * @apiSuccess {String}   message.householder.floor   住戶樓層
+ * @apiSuccess {String}   message.householder.number  住戶門牌號碼
+ * @apiSuccess {String}   message.householder.createTime  住戶建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.householder.createUser 住戶建立人
+ * @apiSuccess {String}   message.householder.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.householder.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.householder.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.householder.createUser.photo  建立人大頭貼
  
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
 {
   "success": true,
-  "message": {
-    "lU6Flo5tMUKXAHlQ": {
+  "message": [
+    {
+      "id": "htssEv5KOKjNgpBM",
+      "createTime": 1497098398557,
       "beInvitedUser": {
-        "6guc1Vmi9KfMJ5SgHkMs7sm6hE32": {
+        "id": "2KK70qWWUpOFuY9R9xDneMyPjVY2",
+        "email": "faye1821@gmail.com",
+        "name": "Mary",
+        "photo": ""
+      },
+      "community": {
+        "id": "hQcpuyY6H0envkI4",
+        "address": "松勤路",
+        "createTime": 1497020996855,
+        "createUser": {
+          "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+          "email": "yongling225@gmail.com",
+          "name": "John",
+          "photo": ""
+        },
+        "name": "宜誠天匯",
+        "photo": "",
+        "sn": "009490"
+      },
+      "household": {
+        "id": "i54xyZvdBg1aPQCg",
+        "createTime": 1497095978390,
+        "createUser": {
+          "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
           "email": "user1@cpig.com",
           "name": "user1",
           "photo": ""
-        }
+        },
+        "floor": "174",
+        "number": "174"
       },
-      "role": "COMMUNITY_ADMIN",
       "inviteUser": {
-        "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
-          "email": "root@cpig.com",
-          "name": "system_admin",
-          "photo": ""
-        }
+        "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
+        "email": "user1@cpig.com",
+        "name": "user1",
+        "photo": ""
       },
-      "community": {
-        "0gFNpjr7SflMxw7Y": {
-          "address": "community 624 address",
-          "name": "community 624"
-        }
-      },
-      "household": {
-        "6XimnblO5LFRSqIJ": {
-          "floor": "323",
-          "number": "323"
-        }
-      }
+      "role": "RESIDENT"
     }
-  }
+  ]
 }
  *
  * @apiUse Header
@@ -524,26 +629,41 @@ module.exports = router;
  *
  * @apiSuccess {Boolean}  success                             API 執行成功與否
  * @apiSuccess {Object}   message                             執行結果
- * @apiSuccess {String}   message.invitationId                邀請單 ID
- * @apiSuccess {String}   message.invitationId.role           邀請加入的角色. ex:COMMUNITY_ADMIN
- * @apiSuccess {Object}   message.invitationId.inviteUser     邀請人資料
- * @apiSuccess {String}   message.invitationId.inviteUser.userId       邀請人 ID
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.email 邀請人 email
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.name  邀請人名稱
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.photo 邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.beInvitedUser     被邀請人資料
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId       被邀請人 ID
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.email 被邀請人 email
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.name  被邀請人名稱
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.photo 被邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.community               邀請加入的社區資料
- * @apiSuccess {String}   message.invitationId.community.communityId   社區 ID 
- * @apiSuccess {String}   message.invitationId.community.communityId.name 社區名稱
- * @apiSuccess {String}   message.invitationId.community.communityId.address 社區地址
- * @apiSuccess {Object}   message.invitationId.householder               邀請加入的住戶資料
- * @apiSuccess {String}   message.invitationId.householder.householderId   住戶 ID 
- * @apiSuccess {String}   message.invitationId.householder.householderId.number 住戶門牌號碼
- * @apiSuccess {String}   message.invitationId.householder.householderId.floor  住戶樓層
+ * @apiSuccess {String}   message.id                邀請單 ID
+ * @apiSuccess {String}   message.role           邀請加入的角色. ex:COMMUNITY_ADMIN
+ * @apiSuccess {String}   message.createTime  邀請單建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.inviteUser     邀請人資料
+ * @apiSuccess {String}   message.inviteUser.id       邀請人 ID
+ * @apiSuccess {String}   message.inviteUser.email 邀請人 email
+ * @apiSuccess {String}   message.inviteUser.name  邀請人名稱
+ * @apiSuccess {String}   message.inviteUser.photo 邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.beInvitedUser     被邀請人資料
+ * @apiSuccess {String}   message.beInvitedUser.id       被邀請人 ID
+ * @apiSuccess {String}   message.beInvitedUser.email 被邀請人 email
+ * @apiSuccess {String}   message.beInvitedUser.name  被邀請人名稱
+ * @apiSuccess {String}   message.beInvitedUser.photo 被邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.community               邀請加入的社區資料
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
+ * @apiSuccess {Object}   message.householder               邀請加入的住戶資料
+ * @apiSuccess {String}   message.householder.id        住戶 ID
+ * @apiSuccess {String}   message.householder.floor   住戶樓層
+ * @apiSuccess {String}   message.householder.number  住戶門牌號碼
+ * @apiSuccess {String}   message.householder.createTime  住戶建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.householder.createUser 住戶建立人
+ * @apiSuccess {String}   message.householder.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.householder.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.householder.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.householder.createUser.photo  建立人大頭貼
  
  * 
  * @apiSuccessExample Success-Response:
@@ -551,35 +671,47 @@ module.exports = router;
 {
   "success": true,
   "message": {
-    "lU6Flo5tMUKXAHlQ": {
-      "beInvitedUser": {
-        "6guc1Vmi9KfMJ5SgHkMs7sm6hE32": {
-          "email": "user1@cpig.com",
-          "name": "user1",
-          "photo": ""
-        }
+    "id": "htssEv5KOKjNgpBM",
+    "beInvitedUser": {
+      "id": "2KK70qWWUpOFuY9R9xDneMyPjVY2",
+      "email": "faye1821@gmail.com",
+      "name": "",
+      "photo": ""
+    },
+    "community": {
+      "id": "hQcpuyY6H0envkI4",
+      "createTime": 1497098398557,
+      "address": "松勤路",
+      "createTime": 1497020996855,
+      "createUser": {
+        "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+        "email": "yongling225@gmail.com",
+        "name": "John",
+        "photo": ""
       },
-      "role": "COMMUNITY_ADMIN",
-      "inviteUser": {
-        "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
-          "email": "root@cpig.com",
-          "name": "system_admin",
-          "photo": ""
-        }
+      "name": "宜誠天匯",
+      "photo": "",
+      "sn": "009490"
+    },
+    "household": {
+      "id": "i54xyZvdBg1aPQCg",
+      "createTime": 1497095978390,
+      "createUser": {
+        "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
+        "email": "user1@cpig.com",
+        "name": "user1",
+        "photo": ""
       },
-      "community": {
-        "0gFNpjr7SflMxw7Y": {
-          "address": "community 624 address",
-          "name": "community 624"
-        }
-      },
-      "household": {
-        "6XimnblO5LFRSqIJ": {
-          "floor": "323",
-          "number": "323"
-        }
-      }
-    }
+      "floor": "174",
+      "number": "174"
+    },
+    "inviteUser": {
+      "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
+      "email": "user1@cpig.com",
+      "name": "user1",
+      "photo": ""
+    },
+    "role": "RESIDENT"
   }
 }
  *
@@ -600,26 +732,41 @@ module.exports = router;
  *
  * @apiSuccess {Boolean}  success                             API 執行成功與否
  * @apiSuccess {Object}   message                             執行結果
- * @apiSuccess {String}   message.invitationId                邀請單 ID
- * @apiSuccess {String}   message.invitationId.role           邀請加入的角色. ex:COMMUNITY_ADMIN
- * @apiSuccess {Object}   message.invitationId.inviteUser     邀請人資料
- * @apiSuccess {String}   message.invitationId.inviteUser.userId       邀請人 ID
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.email 邀請人 email
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.name  邀請人名稱
- * @apiSuccess {String}   message.invitationId.inviteUser.userId.photo 邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.beInvitedUser     被邀請人資料
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId       被邀請人 ID
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.email 被邀請人 email
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.name  被邀請人名稱
- * @apiSuccess {String}   message.invitationId.beInvitedUser.userId.photo 被邀請人大頭貼 URL
- * @apiSuccess {Object}   message.invitationId.community               邀請加入的社區資料
- * @apiSuccess {String}   message.invitationId.community.communityId   社區 ID 
- * @apiSuccess {String}   message.invitationId.community.communityId.name 社區名稱
- * @apiSuccess {String}   message.invitationId.community.communityId.address 社區地址
- * @apiSuccess {Object}   message.invitationId.householder               邀請加入的住戶資料
- * @apiSuccess {String}   message.invitationId.householder.householderId   住戶 ID 
- * @apiSuccess {String}   message.invitationId.householder.householderId.number 住戶門牌號碼
- * @apiSuccess {String}   message.invitationId.householder.householderId.floor  住戶樓層
+ * @apiSuccess {String}   message.id                邀請單 ID
+ * @apiSuccess {String}   message.role           邀請加入的角色. ex:COMMUNITY_ADMIN
+ * @apiSuccess {String}   message.createTime  邀請單建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.inviteUser     邀請人資料
+ * @apiSuccess {String}   message.inviteUser.id       邀請人 ID
+ * @apiSuccess {String}   message.inviteUser.email 邀請人 email
+ * @apiSuccess {String}   message.inviteUser.name  邀請人名稱
+ * @apiSuccess {String}   message.inviteUser.photo 邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.beInvitedUser     被邀請人資料
+ * @apiSuccess {String}   message.beInvitedUser.id       被邀請人 ID
+ * @apiSuccess {String}   message.beInvitedUser.email 被邀請人 email
+ * @apiSuccess {String}   message.beInvitedUser.name  被邀請人名稱
+ * @apiSuccess {String}   message.beInvitedUser.photo 被邀請人大頭貼 URL
+ * @apiSuccess {Object}   message.community               邀請加入的社區資料
+ * @apiSuccess {String}   message.community.id 社區 ID
+ * @apiSuccess {String}   message.community.name 社區名稱
+ * @apiSuccess {String}   message.community.address 社區地址
+ * @apiSuccess {String}   message.community.createTime 社區建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {String}   message.community.sn 社區序號
+ * @apiSuccess {String}   message.community.photo 社區圖片 URL
+ * @apiSuccess {Object}   message.community.createUser  社區建立人
+ * @apiSuccess {String}   message.community.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.community.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.community.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.community.createUser.photo  建立人大頭貼 URL
+ * @apiSuccess {Object}   message.householder               邀請加入的住戶資料
+ * @apiSuccess {String}   message.householder.id        住戶 ID
+ * @apiSuccess {String}   message.householder.floor   住戶樓層
+ * @apiSuccess {String}   message.householder.number  住戶門牌號碼
+ * @apiSuccess {String}   message.householder.createTime  住戶建立時間 (time since the Unix epoch, in milliseconds)
+ * @apiSuccess {Object}   message.householder.createUser 住戶建立人
+ * @apiSuccess {String}   message.householder.createUser.id  建立人 ID
+ * @apiSuccess {String}   message.householder.createUser.email  建立人 Email
+ * @apiSuccess {String}   message.householder.createUser.name  建立人暱稱
+ * @apiSuccess {String}   message.householder.createUser.photo  建立人大頭貼
  
  * 
  * @apiSuccessExample Success-Response:
@@ -627,35 +774,47 @@ module.exports = router;
 {
   "success": true,
   "message": {
-    "lU6Flo5tMUKXAHlQ": {
-      "beInvitedUser": {
-        "6guc1Vmi9KfMJ5SgHkMs7sm6hE32": {
-          "email": "user1@cpig.com",
-          "name": "user1",
-          "photo": ""
-        }
+    "id": "htssEv5KOKjNgpBM",
+    "createTime": 1497098398557,
+    "beInvitedUser": {
+      "id": "2KK70qWWUpOFuY9R9xDneMyPjVY2",
+      "email": "faye1821@gmail.com",
+      "name": "Mary",
+      "photo": ""
+    },
+    "community": {
+      "id": "hQcpuyY6H0envkI4",
+      "address": "松勤路",
+      "createTime": 1497020996855,
+      "createUser": {
+        "id": "WSvJfECtRMcSTg5E4bovG1bMJiy2",
+        "email": "yongling225@gmail.com",
+        "name": "John",
+        "photo": ""
       },
-      "role": "COMMUNITY_ADMIN",
-      "inviteUser": {
-        "HOeBzcVmwyPTL3Kdl6abfQwIbx82": {
-          "email": "root@cpig.com",
-          "name": "system_admin",
-          "photo": ""
-        }
+      "name": "宜誠天匯",
+      "photo": "",
+      "sn": "009490"
+    },
+    "household": {
+      "id": "i54xyZvdBg1aPQCg",
+      "createTime": 1497095978390,
+      "createUser": {
+        "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
+        "email": "user1@cpig.com",
+        "name": "user1",
+        "photo": ""
       },
-      "community": {
-        "0gFNpjr7SflMxw7Y": {
-          "address": "community 624 address",
-          "name": "community 624"
-        }
-      },
-      "household": {
-        "6XimnblO5LFRSqIJ": {
-          "floor": "323",
-          "number": "323"
-        }
-      }
-    }
+      "floor": "174",
+      "number": "174"
+    },
+    "inviteUser": {
+      "id": "6guc1Vmi9KfMJ5SgHkMs7sm6hE32",
+      "email": "user1@cpig.com",
+      "name": "user1",
+      "photo": ""
+    },
+    "role": "RESIDENT"
   }
 }
  *
