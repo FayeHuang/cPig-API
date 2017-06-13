@@ -27,7 +27,7 @@
   },
   "apidoc": {
     "title": "CPIG API",
-    "url" : "https://us-central1-cpig-5b148.cloudfunctions.net/api",
+    "url": "https://us-central1-cpig-5b148.cloudfunctions.net/api",
     "sampleUrl": "https://us-central1-cpig-5b148.cloudfunctions.net/api",
     "template": {
       "forceLanguage": "en"

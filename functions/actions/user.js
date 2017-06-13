@@ -13,6 +13,21 @@ const getOne = (id) => {
   })
 }
 
+const getAll = () => {
+  return db.ref(`Users`).once('value').then(snapshot => {
+    var result = [];
+    if (snapshot.val()) {
+      snapshot.forEach(childSnapshot => {
+        var data = childSnapshot.val();
+        delete data.isPublic;
+        data.id = childSnapshot.key;
+        result.push(data);
+      })
+    }
+    return result;
+  })
+}
+
 const getRoles = (id) => {
   return db.ref(`UserRoles/${id}/system`).once('value').then(snapshot => {
     if (snapshot.val())
@@ -65,6 +80,7 @@ const isHouseholdRoleExist = (role) => {
 
 module.exports = {
   getOne: getOne,
+  getAll: getAll,
   getRoles: getRoles,
   getRolesInCommunity: getRolesInCommunity,
   getRolesInHousehold: getRolesInHousehold,

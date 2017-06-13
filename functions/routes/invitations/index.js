@@ -6,16 +6,21 @@ const invitation = require("./invitation");
 const acceptInvitation = require("./acceptInvitation");
 const communityInvitations = require("./communityInvitations");
 const communityInvitation = require("./communityInvitation");
-const householdInvitations = require("./householdInvitations")
-const householdInvitation = require("./householdInvitation")
+const householdInvitations = require("./householdInvitations");
+const householdInvitation = require("./householdInvitation");
+const communityBeInvitedUsers = require("./communityBeInvitedUsers");
+const householdBeInvitedUsers = require("./householdBeInvitedUsers");
 
 router.use('/user/invitations', invitations);
 router.use('/user/invitations/:invitationId', invitation);
 router.use('/user/invitations/:invitationId/accept', acceptInvitation);
 
+
+router.use('/communities/:communityId/role/:role/beInvitedUsers', communityBeInvitedUsers);
 router.use('/communities/:communityId/role/:role/invitations', communityInvitations);
 router.use('/communities/:communityId/role/:role/invitations/:invitationId', communityInvitation);
 
+router.use('/communities/:communityId/households/:householdId/role/:role/beInvitedUsers', householdBeInvitedUsers);
 router.use('/communities/:communityId/households/:householdId/role/:role/invitations', householdInvitations);
 router.use('/communities/:communityId/households/:householdId/role/:role/invitations/:invitationId', householdInvitation);
 
@@ -232,6 +237,40 @@ module.exports = router;
  *  HTTP/1.1 200 OK
 {
   "success": true
+}
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
+
+//  [GET]     /communities/:communityId/role/:role/beInvitedUsers
+/**
+ * @api {get} /communities/:communityId/role/:role/beInvitedUsers Read data of possible be invited users in community
+ * @apiName GetBeInvitedUsersInCommunity
+ * @apiGroup Invitations
+ * 
+ * @apiParam {String} communityId 社區 ID
+ * @apiParam {String} role 角色 (ex: COMMUNITY_ADMIN)
+ *
+ * @apiSuccess {Boolean}  success                             API 執行成功與否
+ * @apiSuccess {Object[]}   message                             執行結果
+ * @apiSuccess {String}   message.id       邀請人 ID
+ * @apiSuccess {String}   message.email 邀請人 email
+ * @apiSuccess {String}   message.name  邀請人名稱
+ * @apiSuccess {String}   message.photo 邀請人大頭貼 URL
+ * 
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+{
+  "success": true,
+  "message": [
+    {
+      "email": "user3@cpig.com",
+      "name": "user345",
+      "photo": "",
+      "id": "4TOdMx4EsEdVKJc5vd2QCZkes902"
+    }
+  ]
 }
  *
  * @apiUse Header
@@ -499,6 +538,41 @@ module.exports = router;
  *  HTTP/1.1 200 OK
 {
   "success": true
+}
+ *
+ * @apiUse Header
+ * @apiUse Error
+ */
+
+//  [GET]     /communities/:communityId/households/:householdId/role/:role/beInvitedUsers
+/**
+ * @api {get} /communities/:communityId/households/:householdId/role/:role/beInvitedUsers Read data of possible be invited users in household
+ * @apiName GetBeInvitedUsersInHousehold
+ * @apiGroup Invitations
+ * 
+ * @apiParam {String} communityId 社區 ID
+ * @apiParam {String} householdId 住戶 ID
+ * @apiParam {String} role 角色 (ex: RESIDENT)
+ *
+ * @apiSuccess {Boolean}  success                             API 執行成功與否
+ * @apiSuccess {Object[]}   message                             執行結果
+ * @apiSuccess {String}   message.id       邀請人 ID
+ * @apiSuccess {String}   message.email 邀請人 email
+ * @apiSuccess {String}   message.name  邀請人名稱
+ * @apiSuccess {String}   message.photo 邀請人大頭貼 URL
+ * 
+ * @apiSuccessExample Success-Response:
+ *  HTTP/1.1 200 OK
+{
+  "success": true,
+  "message": [
+    {
+      "email": "user3@cpig.com",
+      "name": "user345",
+      "photo": "",
+      "id": "4TOdMx4EsEdVKJc5vd2QCZkes902"
+    }
+  ]
 }
  *
  * @apiUse Header

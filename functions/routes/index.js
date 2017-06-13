@@ -85,10 +85,12 @@ router.use(householdMembers);
     GET     /user/invitations/:invitationId
     DELETE  /user/invitations/:invitationId
     POST    /user/invitations/:invitationId/accept
+    GET     /communities/:communityId/role/:role/beInvitedUsers
     GET     /communities/:communityId/role/:role/invitations
     POST    /communities/:communityId/role/:role/invitations
     GET     /communities/:communityId/role/:role/invitations/:invitationId
     DELETE  /communities/:communityId/role/:role/invitations/:invitationId
+    GET     /communities/:communityId/households/:householdId/role/:role/beInvitedUsers
     GET     /communities/:communityId/households/:householdId/role/:role/invitations
     POST    /communities/:communityId/households/:householdId/role/:role/invitations
     GET     /communities/:communityId/households/:householdId/role/:role/invitations/:invitationId

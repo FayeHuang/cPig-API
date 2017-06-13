@@ -61,6 +61,20 @@ const _mergeAll = (invitationIds) => {
   });
 }
 
+const getBeInvitedUsers = (role, communityId, householdId) => {
+  var process = [];
+  if (householdId)
+    process.push(householdMember.getAll(householdId, role));
+  else
+    process.push(communityMember.getAll(communityId, role));
+  process.push(user.getAll());
+  return Promise.all(process).then(data => {
+    const filterUserIds = data[0].map(user => user.id);
+    const users = data[1];
+    return users.filter(user => filterUserIds.indexOf(user.id) < 0);
+  });
+}
+
 const getAllByRole = (role, communityId, householdId) => {
   return db.ref(`Invitations`).orderByChild('role').equalTo(role).once('value').then(snapshot => {
     if (snapshot.val()) {
@@ -191,6 +205,7 @@ module.exports = {
   getAll: getAll,
   getOwn: getOwn,
   getOne: getOne,
+  getBeInvitedUsers: getBeInvitedUsers,
   create: create,
   remove: remove,
   removeByHousehold: removeByHousehold,
