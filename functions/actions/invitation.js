@@ -93,6 +93,8 @@ const getAllByRole = (role, communityId, householdId) => {
       })
       return list.length > 0 ? _mergeAll(list):[];
     }
+    else
+      return [];
   })
 }
 
