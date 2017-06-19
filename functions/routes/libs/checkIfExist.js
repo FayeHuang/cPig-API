@@ -10,6 +10,7 @@ const householdMember = require("../../actions/householdMember");
 const invitation = require("../../actions/invitation");
 const household = require("../../actions/household");
 const user = require("../../actions/user");
+const package = require("../../actions/package");
 
 const checkCommunity = (req, res, next) => {
   if (req.params.communityId) {
@@ -227,6 +228,24 @@ const checkHouseholdRoleInvitation = (req, res, next) => {
     next();
 }
 
+const checkPackageInHousehold = (req, res, next) => {
+  if (req.params.householdId && req.params.packageId) {
+    const householdId = req.params.householdId;
+    const packageId = req.params.packageId;
+    package.isExistInHousehold(householdId, packageId).then(result => {
+      if (result) {
+        req.householdId = householdId;
+        req.packageId = packageId;
+        next();
+      }
+      else
+        return http.notFound(req, res, `household '${householdId}' package '${packageId}'`);
+    })
+  }
+  else
+    next();
+}
+
 router.use('/user/roles/community/:communityId*', checkCommunity);
 router.use('/user/roles/community/:communityId/household/:householdId*', checkHouseholdInCommunity);
 router.use('/user/permissions/community/:communityId*', checkCommunity);
@@ -249,5 +268,6 @@ router.use('/communities/:communityId/households/:householdId/role/:role/invitat
 router.use('/communities/:communityId/householdRequisitions/:householdReqId*', checkHouseholdRequisitionInCommunity);
 router.use('/communities/:communityId/role/:role/members/:userId*', checkMemberInCommunity);
 router.use('/communities/:communityId/households/:householdId/role/:role/members/:userId*', checkMemberInHousehold);
+router.use('/communities/:communityId/households/:householdId/packages/:packageId*', checkPackageInHousehold);
 
 module.exports = router;

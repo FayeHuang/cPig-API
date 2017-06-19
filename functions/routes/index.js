@@ -13,6 +13,7 @@ const householdMembers = require("./householdMembers");
 const invitations = require("./invitations");
 const inviteCode = require("./inviteCode"); 
 const households = require("./households");
+const packages = require("./packages");
 
 
 router.use(checkIfExist);
@@ -117,6 +118,21 @@ router.use(inviteCode);
     DELETE  /communities/:communityId/role/:role/members/:userId
 */
 router.use(communityMembers);
+
+/*
+    GET     /communities/:communityId/packages
+    POST    /communities/:communityId/packageReceiveCodeVerify
+    GET     /communities/:communityId/households/:householdId/packages
+    POST    /communities/:communityId/households/:householdId/packages
+    PUT     /communities/:communityId/households/:householdId/packages/:packageId
+    DELETE  /communities/:communityId/households/:householdId/packages/:packageId
+    POST    /communities/:communityId/households/:householdId/packages/:packageId/signUp
+    GET     /communities/:communityId/households/:householdId/packages/:packageId/receiveCode
+    POST    /communities/:communityId/households/:householdId/packages/:packageId/receiveCode
+    PUT     /communities/:communityId/households/:householdId/packages/:packageId/receiveCode
+    DELETE  /communities/:communityId/households/:householdId/packages/:packageId/receiveCode
+*/
+router.use(packages);
 
 
 // The 404 Route (ALWAYS Keep this as the last route)
